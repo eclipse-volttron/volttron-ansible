@@ -1,0 +1,1 @@
+volttron_source_changed: "{{ volttron_source_changed | default(False) }}"
