@@ -1,0 +1,10 @@
+---
+## This playbook is based on this stack overflow answer: https://stackoverflow.com/a/20572360
+## To use, you must pass the command of interest in the "command" variable (required by the playbook)
+## Note that proper string quoting is important to run `vctl status` you'd need something like:
+##      ansible-playbook [...] path/to/ad-hoc.yml -e "command='vctl status'"
+##      where the [...] is any normal ansible-playbook options, including inventory or limits.
+- name: install VOLTTRON platform
+  hosts: all
+  roles:
+  - volttron.deployment.ad_hoc
