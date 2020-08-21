@@ -6,7 +6,7 @@
 - name: arm-specific ansible venv packages
   pip:
     virtualenv: "{{ venv_for_ansible }}"
-    virtualenv_command: /usr/bin/python3 -m venv
+    virtualenv_command: python3 -m venv
     name:
     - cython
   when: ansible_architecture in ["arm7l"]
@@ -19,7 +19,7 @@
 - name: Create ansbile virtual env
   pip:
     virtualenv: "{{ venv_for_ansible }}"
-    virtualenv_command: /usr/bin/python3 -m venv
+    virtualenv_command: python3 -m venv
     name:
     - pexpect
     - psutil #required for volttron_platform module

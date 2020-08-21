@@ -10,7 +10,7 @@
 - name: create volttron platform venv {{ volttron_venv }}
   pip:
     virtualenv: "{{ volttron_venv }}"
-    virtualenv_command: "/usr/bin/python3 -m venv"
+    virtualenv_command: "python3 -m venv"
     ## We add setuptools here because the module needs at
     ## a non-empty target list to avoid warnings and report
     ## change status correctly
