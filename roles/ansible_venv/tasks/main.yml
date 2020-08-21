@@ -1,7 +1,7 @@
 ---
 - name: force python3 for steps to create the venv
   set_fact:
-    ansible_python_interpreter: "/usr/bin/python3"
+    ansible_python_interpreter: "python3"
 
 - name: arm-specific ansible venv packages
   pip:
@@ -10,6 +10,10 @@
     name:
     - cython
   when: ansible_architecture in ["arm7l"]
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ http_proxy }}"
+
   ## NOTE: on arm-based systems we require cython to be able to install some other dependencies.
   ##       I believe that this is because there are not available binary distributions on PyPI
 
@@ -23,6 +27,9 @@
     name:
     - pexpect
     - psutil #required for volttron_platform module
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ http_proxy }}"
 
 - name: add selinux to ansible_venv on systems using selinux
   when: ansible_selinux.status == "enabled"
@@ -30,6 +37,9 @@
     virtualenv: "{{ venv_for_ansible }}"
     name:
     - selinux
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ http_proxy }}"
 
 # Sets the ansible venv python interpreter to be the one that
 # is used for the rest of the tasks.

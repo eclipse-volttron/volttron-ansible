@@ -6,6 +6,10 @@
     url: https://github.com/{{ volttron_git_organization }}/{{ volttron_git_repo }}/archive/{{ volttron_git_branch }}.tar.gz
     dest: "/tmp/volttron-{{ volttron_git_branch }}.tar.gz"
     force: yes
+    use_proxy: yes
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ http_proxy }}"
 
 - name: Stat volttron dir
   stat:
