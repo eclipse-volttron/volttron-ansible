@@ -64,9 +64,9 @@
     - name: Adding apt repo for erlang
       apt_repository:
         update_cache: yes
-        repo: deb https://packages.erlang-solutions.com/ubuntu bionic contrib
+        repo: "deb https://packages.erlang-solutions.com/{{ ansible_distribution_file_variety | lower }} {{ ansible_distribution_release | lower }} contrib"
         state: present
-        filename: erlang.solutions.list
+        filename: from_ansible.erlang.solutions
     - name: Install erlang requirements
       apt:
         update_cache: yes
