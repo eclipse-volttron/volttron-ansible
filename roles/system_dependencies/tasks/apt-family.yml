@@ -64,14 +64,11 @@
     - name: Adding apt repo for erlang
       apt_repository:
         update_cache: yes
-        repo: deb https://packages.erlang-solutions.com/ubuntu bionic contrib
+        repo: "deb https://packages.erlang-solutions.com/{{ ansible_distribution_file_variety | lower }} {{ ansible_distribution_release | lower }} contrib"
         state: present
-        filename: erlang.solutions.list
-    - name: Install erlang requirements
-      apt:
-        update_cache: yes
-        state: present
-        name:
+        filename: from_ansible.erlang.solutions
+    - set_fact:
+        erlang_packages:
         - "erlang-asn1={{ erlang_package_version | regex_replace('\"','') }}"
         - "erlang-base={{ erlang_package_version | regex_replace('\"','') }}"
         - "erlang-crypto={{ erlang_package_version | regex_replace('\"','') }}"
@@ -80,14 +77,11 @@
         - "erlang-eldap={{ erlang_package_version | regex_replace('\"','') }}"
         - "erlang-erl-docgen={{ erlang_package_version | regex_replace('\"','') }}"
         - "erlang-eunit={{ erlang_package_version | regex_replace('\"','') }}"
-        - "erlang-ic={{ erlang_package_version | regex_replace('\"','') }}"
         - "erlang-inets={{ erlang_package_version | regex_replace('\"','') }}"
-        - "erlang-inviso={{ erlang_package_version | regex_replace('\"','') }}"
         - "erlang-mnesia={{ erlang_package_version | regex_replace('\"','') }}"
         - "erlang-odbc={{ erlang_package_version | regex_replace('\"','') }}"
         - "erlang-os-mon={{ erlang_package_version | regex_replace('\"','') }}"
         - "erlang-parsetools={{ erlang_package_version | regex_replace('\"','') }}"
-        - "erlang-percept={{ erlang_package_version | regex_replace('\"','') }}"
         - "erlang-public-key={{ erlang_package_version | regex_replace('\"','') }}"
         - "erlang-runtime-tools={{ erlang_package_version | regex_replace('\"','') }}"
         - "erlang-snmp={{ erlang_package_version | regex_replace('\"','') }}"
@@ -97,6 +91,19 @@
         - "erlang-tools={{ erlang_package_version | regex_replace('\"','') }}"
         - "erlang-xmerl={{ erlang_package_version | regex_replace('\"','') }}"
         - "erlang-nox={{ erlang_package_version | regex_replace('\"','') }}"
+        erlang_x86_packages:
+        - "erlang-ic={{ erlang_package_version | regex_replace('\"','') }}"
+        - "erlang-inviso={{ erlang_package_version | regex_replace('\"','') }}"
+        - "erlang-percept={{ erlang_package_version | regex_replace('\"','') }}"
+    - set_fact:
+        erlang_packages: "{{ erlang_packages + erlang_x86_packages }}"
+      when: ansible_architecture not in ["armv7l"]
+
+    - name: Install erlang requirements
+      apt:
+        update_cache: yes
+        state: present
+        name: "{{ erlang_packages }}"
 
 - name: note that dependencies were installed
   set_fact:
