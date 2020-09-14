@@ -174,7 +174,7 @@ def get_platform_status(module, process_env):
         cwd=params['volttron_root'],
         env=process_env,
     )
-    if cmd_result.returncode == 2 and "unrecognized arguments: --json" in cmd_result.stderr:
+    if cmd_result.returncode == 2 and "unrecognized arguments: --json" in cmd_result.stderr.decode('utf-8'):
         module.fail_json(msg='agent installation currently requires a volttron version which supports the --json flag in vctl')
     if cmd_result.returncode != 0:
         module.fail_json(msg='agent state not recognized', subprocess_result=repr(cmd_result))
