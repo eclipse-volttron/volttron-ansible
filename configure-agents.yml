@@ -8,7 +8,7 @@
   tasks:
 
   - name: install agents
-    volttron_agent:
+    volttron.deployment.volttron_agent:
       volttron_root: "{{ volttron_root }}"
       volttron_home: "{{ volttron_home }}"
       volttron_venv: "{{ volttron_venv }}"
