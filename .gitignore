@@ -5,6 +5,7 @@ __pycache__/
 
 # Ansible builds
 *.tgz
+*.tar.gz
 
 # C extensions
 *.so
