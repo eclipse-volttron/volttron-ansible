@@ -85,6 +85,7 @@
     #  [string] default: ``''``
     #    Configurable http proxy passed to pip when installing extra packages
     http_proxy: "{{ http_proxy | default('') }}"
+    https_proxy: "{{ https_proxy | default('') }}"
 
     ###
     #  [string] default: (the default is system dependent)
