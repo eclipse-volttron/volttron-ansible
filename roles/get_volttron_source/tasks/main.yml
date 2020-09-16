@@ -14,7 +14,7 @@
   register: vctl_stat
 - debug:
     msg: "vctl hash is: {{ vctl_stat['stat']['checksum']"
-  when: verbose_debug_tasks
+  when: verbose_debug_tasks | bool
 - name: replace vctl
   when: vctl_stat['stat']['checksum'] == "e45c13d243e4abf0921ec8738993bdf1dffbbfc7"
   copy:

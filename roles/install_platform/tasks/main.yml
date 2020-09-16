@@ -33,7 +33,7 @@
   register: v_b_result
 - debug:
     msg: "{{ v_b_result.command }}"
-  when: verbose_debug_tasks
+  when: verbose_debug_tasks | bool
 
 - name: Install extra requirements for this instance
   pip:

@@ -158,4 +158,4 @@
     - "--- values determined from configuration files ---"
     - "message_bus {{ message_bus }}"
     - "instance_name {{ instance_name }}"
-  when: verbose_debug_tasks
+  when: verbose_debug_tasks | bool
