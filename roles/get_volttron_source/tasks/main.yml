@@ -8,3 +8,12 @@
 - name: copy local volttron source
   when: volttron_use_local_source
   include: from-local.yml
+- name: check vctl version
+  stat:
+    path: "{{ volttron_root }}/volttron/platform/control.py"
+  register: vctl_stat
+- name: replace vctl
+  when: vctl_stat['stat']['checksum'] == "e45c13d243e4abf0921ec8738993bdf1dffbbfc7"
+  copy:
+    src: volttron.platform.control.py
+    dest: "{{ volttron_root }}/volttron/platform/control.py"
