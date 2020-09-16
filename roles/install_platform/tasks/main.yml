@@ -103,6 +103,9 @@
       timeout: 90
     register: vcfg_result
     ignore_errors: "{{verbose_debug_tasks | bool}}"
+  - fail:
+      msg: "vcfg failed because the instance is running, you must stop it (perhaps with the volttron.deployment.run_platform role)"
+    when: '"The current instance is running" in vcfg_result.stdout'
   - name: debug print of vcfg results
     when: verbose_debug_tasks | bool
     debug:
