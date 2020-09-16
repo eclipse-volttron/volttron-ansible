@@ -13,10 +13,11 @@
     path: "{{ volttron_root }}/volttron/platform/control.py"
   register: vctl_stat
 - debug:
-    msg: "vctl hash is: {{ vctl_stat['stat']['checksum']"
+    msg:
+    - "vctl hash is: {{ vctl_stat['stat']['checksum'] }}"
   when: verbose_debug_tasks | bool
 - name: replace vctl
-  when: vctl_stat['stat']['checksum'] == "e45c13d243e4abf0921ec8738993bdf1dffbbfc7"
+  when: vctl_stat['stat']['checksum'] == "d2369e903a82ba43732ff9cc58917094743a9c44"
   copy:
     src: volttron.platform.control.py
     dest: "{{ volttron_root }}/volttron/platform/control.py"
