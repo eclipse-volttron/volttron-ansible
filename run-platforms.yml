@@ -9,7 +9,7 @@
   tasks:
 
     - name: "start or stop the platform (set to {{ platform_state }})"
-      volttron_platform:
+      volttron.deployment.volttron_platform:
         volttron_root: "{{volttron_root}}"
         volttron_home: "{{volttron_home}}"
         state: "{{ platform_state }}"

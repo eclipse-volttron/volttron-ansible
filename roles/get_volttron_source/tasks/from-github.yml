@@ -9,7 +9,7 @@
     use_proxy: yes
   environment:
     http_proxy: "{{ http_proxy }}"
-    https_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ https_proxy }}"
 
 - name: Stat volttron dir
   stat:

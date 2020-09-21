@@ -46,7 +46,7 @@
     #    The branch portion of the source url used to retrieve the VOLTTRON source.
     #    The full url is of the form
     #    ``https://github.com/{{ volttron_git_organization }}/{{ volttron_git_repo }}/archive/{{ volttron_git_branch }}.tar.gz``
-    volttron_git_branch: "{{ volttron_git_branch | default('develop') }}"
+    volttron_git_branch: "{{ volttron_git_branch | default('master') }}"
 
     ## variables related to where volttron source and platform state are stored on the node
     ###
@@ -85,6 +85,7 @@
     #  [string] default: ``''``
     #    Configurable http proxy passed to pip when installing extra packages
     http_proxy: "{{ http_proxy | default('') }}"
+    https_proxy: "{{ https_proxy | default('') }}"
 
     ###
     #  [string] default: (the default is system dependent)
@@ -157,4 +158,4 @@
     - "--- values determined from configuration files ---"
     - "message_bus {{ message_bus }}"
     - "instance_name {{ instance_name }}"
-  when: verbose_debug_tasks
+  when: verbose_debug_tasks | bool

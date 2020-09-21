@@ -174,10 +174,10 @@ def get_platform_status(module, process_env):
         cwd=params['volttron_root'],
         env=process_env,
     )
-    if cmd_result.returncode == 2 and "unrecognized arguments: --json" in cmd_result.stderr:
+    if cmd_result.returncode == 2 and "unrecognized arguments: --json" in cmd_result.stderr.decode('utf-8'):
         module.fail_json(msg='agent installation currently requires a volttron version which supports the --json flag in vctl')
     if cmd_result.returncode != 0:
-        module.fail_json(msg='agent state not recognized', subprocess_result=repr(cmd_result))
+        module.fail_json(msg='vctl status returned an error', subprocess_result=repr(cmd_result))
 
     try:
         agents = {}
@@ -504,6 +504,7 @@ def execute_task(module):
         'changed': False,
     }
     agent_spec = module.params['agent_spec']
+    agent_vip_id =module.params['agent_vip_id']
 
     subprocess_env = dict(os.environ)
     subprocess_env.update({
@@ -515,7 +516,7 @@ def execute_task(module):
     results['initial_agents'] = existing_agents
 
     if agent_spec['agent_state'] == 'present':
-        if module.params['agent_vip_id'] in existing_agents:
+        if agent_vip_id in existing_agents:
             pass
         else:
             results.update(install_agent(module=module, process_env=subprocess_env))
@@ -527,10 +528,10 @@ def execute_task(module):
         else:
             pass
     elif agent_spec['agent_state'] == 'absent':
-        if agent_spec['agent_vip_id'] not in existing_agents:
+        if agent_vip_id not in existing_agents:
             pass
         else:
-            results.update(remove_agent(agent_uuid=existing_agents[agent_spec['agent_vip_id']]['agent_uuid'], params=module.params, process_env=subprocess_env))
+            results.update(remove_agent(agent_uuid=existing_agents[agent_vip_id]['agent_uuid'], params=module.params, process_env=subprocess_env))
     else:
         module.fail_json(msg='agent state not recognized')
 
