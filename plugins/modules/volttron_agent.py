@@ -98,6 +98,11 @@ options:
             - vip identity of the agent to be installed
         type: string
         required: true
+    skip_requirements:
+        description:
+            - Skip using pip to install agent dependencies even if a requirements file is present
+        type: bool
+        default: False
     agent_spec:
         description:
             - a dictionary of configuration details for the agent
@@ -231,6 +236,8 @@ def install_agent(module, process_env):
         '-vr', module.params['volttron_root'],
         '-s', module_spec['agent_source'],
     ]
+    if module.params['skip_requirements']:
+        install_cmd.append('--skip-requirements')
     if module_spec.get('agent_enabled', False):
         install_cmd.append('--enable')
         install_cmd.extend(['--priority', f"{module_spec.get('agent_priority', 50)}"])
@@ -583,10 +590,14 @@ def run_module():
             "type": "str",
             "required": True,
         },
+        "skip_requirements": {
+            "type": "bool",
+            "default": False,
+        },
         "agent_spec": {
             "type": "dict",
             "required": True,
-        }
+        },
     }
 
     # seed the result dict in the object
