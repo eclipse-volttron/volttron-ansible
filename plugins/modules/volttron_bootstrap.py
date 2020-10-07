@@ -273,6 +273,8 @@ def run_module():
         result.update(execute_bootstrap(module))
     except Exception as an_exception:
         module.fail_json(msg='volttron_bootstrap had an unhandled exception', error=repr(an_exception))
+    if result['return_code']:
+        module.fail_json(msg='bootstrap process failed', **result)
 
     # in the event of a successful module execution, you will want to
     # simple AnsibleModule.exit_json(), passing the key/value results

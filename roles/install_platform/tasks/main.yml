@@ -10,7 +10,7 @@
 - name: create volttron platform venv {{ volttron_venv }}
   pip:
     virtualenv: "{{ volttron_venv }}"
-    virtualenv_command: "/usr/bin/python3 -m venv"
+    virtualenv_command: "python3 -m venv"
     ## We add setuptools here because the module needs at
     ## a non-empty target list to avoid warnings and report
     ## change status correctly
@@ -31,6 +31,9 @@
     - "{{ (message_bus == 'rmq') | ternary('rabbitmq', None) }}"
     - "{{ volttron_features }}"
   register: v_b_result
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ http_proxy }}"
 - debug:
     msg: "{{ v_b_result.command }}"
   when: verbose_debug_tasks | bool
