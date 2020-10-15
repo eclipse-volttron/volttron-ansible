@@ -17,8 +17,12 @@ ansible-galaxy collection install git+https://github.com/volttron/volttron-ansib
 
 ## Documentation
 
-Documentation of the components here is currently included with the main VOLTTRON project's [documentation](volttron.readthedocks.io).
+Documentation of the components here is currently included with the main VOLTTRON project's [documentation](https://volttron.readthedocs.io/en/volttron_7.1_preview/setup/recipes.html).
 
 ## Additional resources
 
-As with any feature, VOLTTRON community members are invited to engage with the core development team for assistance using these tools.
+As always, VOLTTRON community members are encouraged to engage with the core team if you have questions about these features or require assistance.
+This can be done through typical channels:
+- stack overflow questions tagged with 'volttron'
+- email ([web submission form](volttron.org/contact) is available)
+- slack (use the above email form to request access if you're not already a member)
