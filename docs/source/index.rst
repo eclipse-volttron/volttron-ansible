@@ -149,7 +149,7 @@ file. The search path for those is documented by ansible and includes your home 
 the working directory. In order to use python3 whenever possible it is useful to set the interpreter
 setting to ``auto`` as shown in the included file:
 
-.. literalinclude:: ../../../examples/deployment/ansible.cfg
+.. literalinclude:: https://github.com/VOLTTRON/volttron/tree/volttron_7.1_preview/examples/deployment/ansible.cfg
    :caption: ansible.cfg
    :language: yaml
    :linenos:
@@ -341,7 +341,7 @@ the `official documentation on building inventory <https://docs.ansible.com/ansi
 is a great resource for complete and current details. In addition to ansible's standard variables
 and facts, the following configurations are used by VOLTTRON's recipes:
 
-#.. autoyaml:: ../deployment/recipes/roles/set-defaults/tasks/main.yml
+.. autoyaml:: ../deployment/recipes/roles/set-defaults/tasks/main.yml
 
 Available platform configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
