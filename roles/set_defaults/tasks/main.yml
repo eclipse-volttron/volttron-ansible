@@ -42,11 +42,11 @@
     #    ``https://github.com/{{ volttron_git_organization }}/{{ volttron_git_repo }}/archive/{{ volttron_git_branch }}.tar.gz``
     volttron_git_repo: "{{ volttron_git_repo | default('volttron') }}"
     ###
-    #  [string] default: ``develop``
+    #  [string] default: ``main``
     #    The branch portion of the source url used to retrieve the VOLTTRON source.
     #    The full url is of the form
     #    ``https://github.com/{{ volttron_git_organization }}/{{ volttron_git_repo }}/archive/{{ volttron_git_branch }}.tar.gz``
-    volttron_git_branch: "{{ volttron_git_branch | default('master') }}"
+    volttron_git_branch: "{{ volttron_git_branch | default('main') }}"
 
     ## variables related to where volttron source and platform state are stored on the node
     ###
