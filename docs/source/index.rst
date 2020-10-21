@@ -341,7 +341,7 @@ the `official documentation on building inventory <https://docs.ansible.com/ansi
 is a great resource for complete and current details. In addition to ansible's standard variables
 and facts, the following configurations are used by VOLTTRON's recipes:
 
-.. autoyaml:: ../roles/set-defaults/tasks/main.yml
+.. autoyaml:: ../roles/set_defaults/tasks/main.yml
 
 Available platform configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
