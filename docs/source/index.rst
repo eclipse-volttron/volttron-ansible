@@ -24,7 +24,9 @@ The recipes system is designed to be executed from a user workstation or other s
 access to the hosts which will be running the VOLTTRON platforms being configured. In order to do
 so, you require a python environment with ansible installed. You can do this using pip, your system's package manager,
 or in whatever environment you like. If installing volttron locally, it is included as an optional feature when
-bootstrapping the VOLTTRON environment, to enable that use the :ref:`Bootstrap-Options` and include the ``--deployment`` flag.
+bootstrapping the VOLTTRON environment, to enable that see the
+`Bootstrap-Options <https://volttron.readthedocs.io/en/develop/deploying-volttron/bootstrap-options.html?highlight=bootstrap-options#id1>`_
+section in the main documentation and include the ``--deployment`` flag.
 
 The VOLTTRON recipes are maintained in a `dedicated github repository <github.com/VOLTTRON/volttron-ansible>`_ as an
 ansible-galaxy package.
@@ -352,7 +354,7 @@ priorities:
   configuration files which could be used in a subsequent recipes deployment).
 
 
-.. _recipes-configuration
+.. _recipes-configuration:
 
 Recipes configuration
 ---------------------
@@ -373,7 +375,7 @@ the `official documentation on building inventory <https://docs.ansible.com/ansi
 is a great resource for complete and current details. In addition to ansible's standard variables
 and facts, the following configurations are used by VOLTTRON's recipes:
 
-.. autoyaml:: ../../roles/set_defaults/tasks/main.yml
+.. autoyaml:: ../roles/set_defaults/tasks/main.yml
 
 Available platform configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
