@@ -12,12 +12,12 @@ You can install this collection directly from the [source repository](https://do
 That would typically look like:
 
 ```
-ansible-galaxy collection install git+https://github.com/volttron/volttron-ansible.git
+ansible-galaxy install git+https://github.com/volttron/volttron-ansible.git
 ```
 
 ## Documentation
 
-Documentation of the components here is currently included with the main VOLTTRON project's [documentation](https://volttron.readthedocs.io/en/volttron_7.1_preview/setup/recipes.html).
+Documentation of the components here is rendered on [Read the Docs](https://volttron.readthedocs.io/projects/volttron-ansible/en/main/).
 
 ## Additional resources
 
