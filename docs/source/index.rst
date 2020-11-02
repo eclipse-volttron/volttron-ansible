@@ -3,17 +3,18 @@
 VOLTTRON Deployment Recipes
 ===========================
 
-Begining with version 7.1, VOLTTRON introduces the concept of recipes. This system leverages
+Begining with version 7, VOLTTRON introduces the concept of recipes. This system leverages
 `ansible <https://docs.ansible.com/ansible/latest/index.html>`_ to orchestrate the deployment and
 configuration process for VOLTTRON. These recipes can be used for any deployment, but are
 especially useful for larger scale or distributed systems, where it is necessary to manage
 many platforms in an organized way. Some of the key features are:
 
-1. Organize recipes in roles and playbooks so that they can both be used as is, or as
-   components for customized playbooks specific to a particular use case.
-2. Abstract the host-system differences so that the installation process is consistent
-   across supported architectures and operating systems.
-3. Leverage ansible's inventory system so that the marginal burden of managing additional
+1. Platform management logic is implemented using custom ansible modules, which each perform narrow units of work.
+2. The roles and modules are composed in playbooks which implement more complete workflows or procedures.
+   These can be used as they are, or taken as starting point for building playbooks specific to a particular use case.
+3. Implementation details specific to host-system differences (such as hardware architecture or linux distribution) are
+   abstracted so that the user experience is consistent across supported systems.
+4. Ansible's inventory system is leveraged so that the marginal burden of managing additional VOLTTRON
    deployments is low, and confidence of uniformity among those deployments is high.
 
 Getting started with recipes
@@ -21,13 +22,35 @@ Getting started with recipes
 
 The recipes system is designed to be executed from a user workstation or other server with ssh
 access to the hosts which will be running the VOLTTRON platforms being configured. In order to do
-so, you require a python environment with ansible installed. You can do this using pip in whatever
-environment you like; it is included as an optional feature when bootstrapping the VOLTTRON environment,
-to do that use the :ref:`Bootstrap-Options` and include the ``--deployment`` flag.
+so, you require a python environment with ansible installed. You can do this using pip, your system's package manager,
+or in whatever environment you like. If installing volttron locally, it is included as an optional feature when
+bootstrapping the VOLTTRON environment, to enable that see the
+`Bootstrap-Options <https://volttron.readthedocs.io/en/develop/deploying-volttron/bootstrap-options.html?highlight=bootstrap-options#id1>`_
+section in the main documentation and include the ``--deployment`` flag.
 
-As described in the next section, the recipes themselves can all be found in the ``$VOLTTRON_ROOT/deployment/recipes``
-directory. Additionally, to use the recipes you will need to create a set of recipe configuration
-files (discussed in more detail in the :ref:`recipes-configuration` section). These include:
+The VOLTTRON recipes are maintained in a `dedicated github repository <github.com/VOLTTRON/volttron-ansible>`_ as an
+ansible-galaxy package.
+To just use the latest version of the collection, you can use install directly from github with the command::
+
+  ansible-galaxy install git+https://github.com/volttron/volttron-ansible.git
+
+Note that the above requires that you have the ``git`` package installed).
+You can also clone or download the repo and install the collection from a local directory with the following comands::
+
+    ansible-galaxy collection build <path/to/volttron-ansible>
+    ansible-galaxy install volttron-deployment-<version>.tar.gz
+
+.. note::
+   - here the first command expects a path to the root of the volttron-ansible repo and produces a local .tar.gz archive
+     containing the packaged galaxy collection
+   - the first command will print the version number of the collection, which is included in the name of the output
+     tar.gz archive and is used as an argument in the second command
+   - if executing either of the above commands with the output already existing (for example, if you're making local
+     changes which you want to test), you may need to add the ``--force`` flag to overwrite the existing files.
+
+Additionally, to use the recipes you will need to create a set of recipe configuration
+files specific to your use case (discussed in more detail in the :ref:`recipes-configuration` section).
+These include:
 
 .. glossary::
 
@@ -43,10 +66,8 @@ files (discussed in more detail in the :ref:`recipes-configuration` section). Th
     the agents to be installed in the remote platform (remote agent management is not yet supported,
     see :ref:`recipes-feature-planning`).
 
-.. note::
-
-  Examples of these files can be found in the ``$VOLTTRON_ROOT/examples/deployment`` directory.
-
+Examples of these files can be found in the ``examples`` directory of the volttron-ansible repo and are discussed in
+the :ref:`recipe-example` section below.
 
 When working with recipes, a user will generally use the ``ansible-playbook`` command (see the full
 `official documentation <https://docs.ansible.com/ansible/latest/cli/ansible-playbook.html>`_).
@@ -63,7 +84,7 @@ Available recipes
 
 All provided recipes are ansible playbooks and can be executed directly using the the ``ansible-playook``
 command line tool. Each of the available playbooks are discussed in the following subsections, they
-can all be found in the ``$VOLTTRON_ROOT/deployment/recipes`` directory.
+can all be found in the top-level directory of the volttron-ansible repo.
 
 Ensure host key entries
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,7 +109,7 @@ packages, or to cover the case where custom agents may have additional requireme
 recipes is otherwise unaware of.
 
 Note that because this playbook installs system packages, it must be passed a sudo password
-when run (this is done with the standard ansible system and so the features provided by apply).
+when run (this is done with the standard ansible "become" system).
 
 Install platform
 ~~~~~~~~~~~~~~~~
@@ -96,10 +117,19 @@ Install platform
 The ``install-platform.yml`` playbook installs the VOLTTRON source in the configured location,
 creates the virtual environment with both dependencies and VOLTTRON installed, and configures
 the platform itself. The recipe detects optional dependencies required by the platform (for
-example, support for rabbitMQ message bus or web support), as well asl supporting extra bootstrap
+example, support for rabbitMQ message bus or web support), as well as supporting extra bootstrap
 options and PyPI packages to be included. It also creates an activation script which will set
 VOLTTRON-related environmental variables as well as activating the virtual environment, making
-it easy to interact with the platfor locally if required.
+it easy to interact with the platform locally if required.
+
+Configure agents
+~~~~~~~~~~~~~~~~
+
+The ``configure-agents.yml`` playbook copies the local directory of configuration files to the
+remote system, and installs and configures all agents listed in the platform's configuration file.
+The agent installation is done using a loop over calls to the ``volttron_agent`` custom module,
+which itself makes calls to the ``install_agents.py`` script packaged with the volttron platform.
+Note that currently this script does not support making modifications to an existing agent.
 
 Run platform
 ~~~~~~~~~~~~
@@ -109,7 +139,7 @@ desired running state. The default state is "running", but this is configurable 
 (and since variables can be set from the CLI, both starting and stopping are achievable without
 changing the playbook or inventory).
 
-.. _recipe-exampe:
+.. _recipe-example:
 
 Recipe examples
 ---------------
@@ -306,21 +336,25 @@ Feature planning
 The ansible-based recipes feature set has been long requested, but has some challenges when seeking
 to combine existing VOLTTRON usage patterns and complex state with the normal patterns in ansible
 (especially idempotence). This initial feature set is admittedly not very expansive, but is intended
-to be a starting point and an opportunity to see what usage patterns are most desired. Feedback
-in that regard is greatly appreciated. Our current planning includes the following priorities:
+to be a starting point and an opportunity to see what usage patterns are most desired by the VOLTTRON
+community. Feedback in that regard is greatly appreciated. Our current planning includes the following
+priorities:
 
-* Support for a multi-platform system with vc connections, specifically creating/authorizing that
-  connection
+* Expanded support for managing  agents in the installed platforms, eventually to include:
 
-* Support for working with agents in the installed platforms, eventually to include:
+  * updating configuration and/or configuration store of an installed agent
 
-  * installing/uninstalling agents
+  * deploying source for an agent which is not part of the volttron repository so that custom agents can be used
 
-  * updating configuration of an installed agent
+  * performing code updates to an installed platform
 
-  * starting or stopping an installed agent
+* Support for a multi-platform patterns, including cert exchange between managed platforms
 
-.. _recipes-configuration
+* Support for backing up the configured state of a remote platform (into an archive file and/or into a set of
+  configuration files which could be used in a subsequent recipes deployment).
+
+
+.. _recipes-configuration:
 
 Recipes configuration
 ---------------------
