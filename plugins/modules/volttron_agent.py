@@ -98,11 +98,6 @@ options:
             - vip identity of the agent to be installed
         type: string
         required: true
-    skip_requirements:
-        description:
-            - Skip using pip to install agent dependencies even if a requirements file is present
-        type: bool
-        default: False
     agent_spec:
         description:
             - a dictionary of configuration details for the agent
@@ -112,6 +107,7 @@ options:
                 - agent_priority: (int; default 50) sets the priority ordering for starting an enalbed agent
                 - agent_running: (bool), if true, indicates that the agent should be started as it is installed (does not imply enabled)
                 - agent_tag: (string), if installing the agent, apply this tag
+                - skipe_requirements: (bool; default False), if true, add `--skip-dependencies` flag to agent installation
                 - agent_config_store: (list) a list of config store entries to apply to the agent, each entry is a dict supporting the following keys:
                     - absolute_path: (bool, default False) if true, the agents path configuration is assumed absolute on the remote, otherwise the path is prepended with the agent_configs_dir
                     - path: (string - path) path to either a file to add to the config store, or a directory of files to add. If a directory, all files contained will be added to the config store
@@ -236,7 +232,7 @@ def install_agent(module, process_env):
         '-vr', module.params['volttron_root'],
         '-s', module_spec['agent_source'],
     ]
-    if module.params['skip_requirements']:
+    if module_spec.get('skip_requirements', False):
         install_cmd.append('--skip-requirements')
     if module_spec.get('agent_enabled', False):
         install_cmd.append('--enable')
@@ -589,10 +585,6 @@ def run_module():
         "agent_vip_id": {
             "type": "str",
             "required": True,
-        },
-        "skip_requirements": {
-            "type": "bool",
-            "default": False,
         },
         "agent_spec": {
             "type": "dict",
