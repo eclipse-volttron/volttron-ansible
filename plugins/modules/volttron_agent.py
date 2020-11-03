@@ -107,7 +107,8 @@ options:
                 - agent_priority: (int; default 50) sets the priority ordering for starting an enalbed agent
                 - agent_running: (bool), if true, indicates that the agent should be started as it is installed (does not imply enabled)
                 - agent_tag: (string), if installing the agent, apply this tag
-                - skipe_requirements: (bool; default False), if true, add `--skip-dependencies` flag to agent installation
+                - skip_requirements: (bool; default False), if true, add `--skip-dependencies` flag to agent installation
+                - force_install (bool; default False), if true, add `--force` flag to agent installation
                 - agent_config_store: (list) a list of config store entries to apply to the agent, each entry is a dict supporting the following keys:
                     - absolute_path: (bool, default False) if true, the agents path configuration is assumed absolute on the remote, otherwise the path is prepended with the agent_configs_dir
                     - path: (string - path) path to either a file to add to the config store, or a directory of files to add. If a directory, all files contained will be added to the config store
@@ -234,6 +235,8 @@ def install_agent(module, process_env):
     ]
     if module_spec.get('skip_requirements', False):
         install_cmd.append('--skip-requirements')
+    if module_spec.get('force_install', False):
+        install_cmd.append('--force')
     if module_spec.get('agent_enabled', False):
         install_cmd.append('--enable')
         install_cmd.extend(['--priority', f"{module_spec.get('agent_priority', 50)}"])
@@ -519,7 +522,7 @@ def execute_task(module):
     results['initial_agents'] = existing_agents
 
     if agent_spec['agent_state'] == 'present':
-        if agent_vip_id in existing_agents:
+        if agent_vip_id in existing_agents and not (module.params['agent_spec'].get('force_install', False)):
             pass
         else:
             results.update(install_agent(module=module, process_env=subprocess_env))
