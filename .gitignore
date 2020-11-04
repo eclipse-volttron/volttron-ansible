@@ -6,9 +6,10 @@ __pycache__/
 # vagrant files
 examples/.vagrant/*
 
-# Ansible builds
+# Ansible builds and outputs
 *.tgz
 *.tar.gz
+archives/*
 
 # C extensions
 *.so
