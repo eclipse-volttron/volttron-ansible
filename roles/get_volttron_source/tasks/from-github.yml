@@ -1,12 +1,14 @@
 ### download volttron source from github and place at volttron_root
 ### registers `volttron_source_changed` fact (based on hash of tarball)
 ---
-- name: Download volttron repository tarball
+- name: "Download volttron repository tarball [{{ source_url }}]"
   get_url:
-    url: https://github.com/{{ volttron_git_organization }}/{{ volttron_git_repo }}/archive/{{ volttron_git_branch }}.tar.gz
+    url: "{{ source_url }}"
     dest: "/tmp/volttron-{{ volttron_git_branch | regex_replace('/', '.') }}.tar.gz"
     force: yes
     use_proxy: yes
+  vars:
+    source_url: "https://github.com/{{ volttron_git_organization }}/{{ volttron_git_repo }}/archive/{{ volttron_git_branch }}.tar.gz"
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
