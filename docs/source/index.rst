@@ -139,6 +139,15 @@ desired running state. The default state is "running", but this is configurable 
 (and since variables can be set from the CLI, both starting and stopping are achievable without
 changing the playbook or inventory).
 
+Backup deployment
+~~~~~~~~~~~~~~~~~
+
+The ``backup.yml`` playbook will create a gzipped tar archive of the configured volttron root and home
+directories on the remote. The default behavior places the archive in the ``/tmp`` directory on the
+remote system, but setting the ``retrieve_archive`` variable to true will pull the archive back to the
+system from which the playbook is being run. See the ``vars`` section at the top of the playbook file
+for comments with more details.
+
 .. _recipe-example:
 
 Recipe examples

@@ -4,8 +4,11 @@
   roles:
   - volttron.deployment.set_defaults
   vars:
+  # by default, the archive is stored at this location (in the /temp dir of the remote)
   - output_archive_name: /tmp/volttron_deployment_backup.tar.gz
+  # if set to true, the archive will be pulled back to the system from which the playbook is run
   - retrieve_archive: False
+  # if pulled back, this variable configures where on the local system the archive will be pulled back to
   - retrieved_archive_dest_prefix: "archives/"
 
   tasks:
