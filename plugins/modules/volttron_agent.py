@@ -356,7 +356,11 @@ def resolve_config_store(module, process_env):
             for a_file in glob.glob(os.path.join(data_path, '**'), recursive=True):
                 if os.path.isdir(a_file):
                     continue
+                # stored name should not start with '/'
                 stored_name = a_file.split(a_config_listing['path'])[-1].lstrip('/')
+                # path elements ending with `.d` shoudl have that removed (directory marker for name conflicts)
+                stored_name = os.path.join(*[i.rsplit('.d',1)[0] if i.endswith('.d') else i for i in stored_name.split(os.path.sep)])
+                # plugin support for name manipulation
                 stored_name = os.path.join(a_config_listing.get('name',''), stored_name)
                 store_entries.append(_construct_entry_args(
                     a_file,
