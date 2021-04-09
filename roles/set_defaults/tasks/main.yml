@@ -30,23 +30,20 @@
     #    if true then copy the volttron source tree where this playbook is located, rather than a github clone
     volttron_use_local_source: "{{ volttron_use_local_source | default(False) }}"
     ###
-    #  [string] default ``volttron``
-    #    The github organization portion of the source url used to retrieve the VOLTTRON source.
-    #    The full url is of the form
-    #    ``https://github.com/{{ volttron_git_organization }}/{{ volttron_git_repo }}/archive/{{ volttron_git_branch }}.tar.gz``
-    volttron_git_organization: "{{ volttron_git_organization | default('volttron') }}"
-    ###
-    #  [string] default: ``volttron``
-    #    The repo portion of the source url used to retrieve the VOLTTRON source.
-    #    The full url is of the form
-    #    ``https://github.com/{{ volttron_git_organization }}/{{ volttron_git_repo }}/archive/{{ volttron_git_branch }}.tar.gz``
-    volttron_git_repo: "{{ volttron_git_repo | default('volttron') }}"
+    #  [string] default ``https://github.com/volttron/volttron.git``
+    #    The repo url to use when cloning the volttron source.
+    volttron_repo_url: "{{ volttron_repo_url | default('https://github.com/volttron/volttron.git') }}"
     ###
     #  [string] default: ``main``
     #    The branch portion of the source url used to retrieve the VOLTTRON source.
     #    The full url is of the form
     #    ``https://github.com/{{ volttron_git_organization }}/{{ volttron_git_repo }}/archive/{{ volttron_git_branch }}.tar.gz``
     volttron_git_branch: "{{ volttron_git_branch | default('main') }}"
+    ###
+    #  [bool] default: ``false``
+    #    Enable the force flag when cloning and/or updating volttron root.
+    #    If true, will discard any local changes to tracked files (but does retain untracked files).
+    volttron_git_force_clone: "{{ volttron_git_force_clone | default(True) }}"
 
     ## variables related to where volttron source and platform state are stored on the node
     ###
