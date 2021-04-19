@@ -98,11 +98,6 @@ options:
             - vip identity of the agent to be installed
         type: string
         required: true
-    skip_requirements:
-        description:
-            - Skip using pip to install agent dependencies even if a requirements file is present
-        type: bool
-        default: False
     agent_spec:
         description:
             - a dictionary of configuration details for the agent
@@ -112,6 +107,8 @@ options:
                 - agent_priority: (int; default 50) sets the priority ordering for starting an enalbed agent
                 - agent_running: (bool), if true, indicates that the agent should be started as it is installed (does not imply enabled)
                 - agent_tag: (string), if installing the agent, apply this tag
+                - skip_requirements: (bool; default False), if true, add `--skip-dependencies` flag to agent installation
+                - force_install (bool; default False), if true, add `--force` flag to agent installation
                 - agent_config_store: (list) a list of config store entries to apply to the agent, each entry is a dict supporting the following keys:
                     - absolute_path: (bool, default False) if true, the agents path configuration is assumed absolute on the remote, otherwise the path is prepended with the agent_configs_dir
                     - path: (string - path) path to either a file to add to the config store, or a directory of files to add. If a directory, all files contained will be added to the config store
@@ -236,8 +233,10 @@ def install_agent(module, process_env):
         '-vr', module.params['volttron_root'],
         '-s', module_spec['agent_source'],
     ]
-    if module.params['skip_requirements']:
+    if module_spec.get('skip_requirements', False):
         install_cmd.append('--skip-requirements')
+    if module_spec.get('force_install', False):
+        install_cmd.append('--force')
     if module_spec.get('agent_enabled', False):
         install_cmd.append('--enable')
         install_cmd.extend(['--priority', f"{module_spec.get('agent_priority', 50)}"])
@@ -357,7 +356,11 @@ def resolve_config_store(module, process_env):
             for a_file in glob.glob(os.path.join(data_path, '**'), recursive=True):
                 if os.path.isdir(a_file):
                     continue
+                # stored name should not start with '/'
                 stored_name = a_file.split(a_config_listing['path'])[-1].lstrip('/')
+                # path elements ending with `.d` shoudl have that removed (directory marker for name conflicts)
+                stored_name = os.path.join(*[i.rsplit('.d',1)[0] if i.endswith('.d') else i for i in stored_name.split(os.path.sep)])
+                # plugin support for name manipulation
                 stored_name = os.path.join(a_config_listing.get('name',''), stored_name)
                 store_entries.append(_construct_entry_args(
                     a_file,
@@ -523,7 +526,7 @@ def execute_task(module):
     results['initial_agents'] = existing_agents
 
     if agent_spec['agent_state'] == 'present':
-        if agent_vip_id in existing_agents:
+        if agent_vip_id in existing_agents and not (module.params['agent_spec'].get('force_install', False)):
             pass
         else:
             results.update(install_agent(module=module, process_env=subprocess_env))
@@ -589,10 +592,6 @@ def run_module():
         "agent_vip_id": {
             "type": "str",
             "required": True,
-        },
-        "skip_requirements": {
-            "type": "bool",
-            "default": False,
         },
         "agent_spec": {
             "type": "dict",
