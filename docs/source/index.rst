@@ -313,6 +313,45 @@ during the platform installation step. This activates the VOLTTRON environment a
 setting appropriate environment variables. If you run ``vctl``, you'll see that the platform
 is running (but currently has no agents installed).
 
+Step 5: Configure agents
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+With a platform running, you can install agents using local configuration files using the ``volttron_agent``
+module (which is the core of the ``configure-agents`` playbook. The command is::
+
+  ansible-playbook -i <path/to/your/inventory>.yml \
+                   <path/to/>volttron/deployment/recipes/configure-agents.yml \
+                   [-l hostname]
+
+where the optional ``-l hostname`` option can be used to only make changes on one of the managed systems.
+This flag is a standard feature of ansible, and is stressed here because it is assumed that
+it will be common that the configuration of a single system will need to be updated to reflect changes
+in the building configuration or other similar building-specific details.
+
+This playbook ensures that the local configuration directory is synchronized to the remote system and then
+installs the listed agents into the platform.
+
+.. note::
+If an agent is already installed, the system will *not* update its configuration by default. You must
+set the "force" option to ``True``, which will result in the agent being reinstalled (and therefore updated).
+
+The per-agent configuration supports the same flags as the legacy ``install-agents.py`` script upon which it is built.
+The system will also install entries into the agent's configuration store, these can be done individually, or an entire
+directory structure can be used, where the directory path is used to construct the configuration store entry name.
+To allow for cases where the full key for one entry would be part of the name of another (and therefore would need to
+be both a file and a directory on the filesystem), any path element which ends in ``.d`` will have those two characters
+removed from the key in the configuration store.
+The system also supports explicit renaming of individual elements, which is more verbose but allows any particular special
+case to be covered.
+The system is also able to remove entries from the configuration store, but you must explicitly list them by name
+with a status of absent.
+There is currently no support for removing all configuration store entries installed but not present in the local tree.
+
+.. note::
+Entries are added to the configuration store sequentially using the ``vctl`` tool.
+If an agent has a large number of entries, this can be slow and may even result in a timeout.
+Experience thus far shows that progress is retained and re-running the playbook will complete the installation process.
+
 Extra steps
 ~~~~~~~~~~~
 
@@ -351,16 +390,11 @@ priorities:
 
 * Expanded support for managing  agents in the installed platforms, eventually to include:
 
-  * updating configuration and/or configuration store of an installed agent
-
   * deploying source for an agent which is not part of the volttron repository so that custom agents can be used
 
   * performing code updates to an installed platform
 
 * Support for a multi-platform patterns, including cert exchange between managed platforms
-
-* Support for backing up the configured state of a remote platform (into an archive file and/or into a set of
-  configuration files which could be used in a subsequent recipes deployment).
 
 
 .. _recipes-configuration:
