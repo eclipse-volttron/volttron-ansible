@@ -1,0 +1,27 @@
+---
+- name: backup platform
+  hosts: all
+  roles:
+  - volttron.deployment.set_defaults
+  vars:
+  # by default, the archive is stored at this location (in the /temp dir of the remote)
+  - output_archive_name: /tmp/volttron_deployment_backup.tar.gz
+  # if set to true, the archive will be pulled back to the system from which the playbook is run
+  - retrieve_archive: False
+  # if pulled back, this variable configures where on the local system the archive will be pulled back to
+  - retrieved_archive_dest_prefix: "archives/"
+
+  tasks:
+  - name: create archive of volttron home and root
+    archive:
+      path:
+      - "{{ volttron_home }}"
+      - "{{ volttron_root }}"
+      dest: "{{ output_archive_name }}"
+      format: gz
+  - name: retrieve archive
+    when: retrieve_archive | bool
+    fetch:
+      src: "{{ output_archive_name }}"
+      dest: "{{ retrieved_archive_dest_prefix }}/{{ inventory_hostname }}/"
+      flat: yes
