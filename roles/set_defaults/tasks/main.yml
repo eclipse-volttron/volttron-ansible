@@ -43,7 +43,7 @@
     #  [bool] default: ``false``
     #    Enable the force flag when cloning and/or updating volttron root.
     #    If true, will discard any local changes to tracked files (but does retain untracked files).
-    volttron_git_force_clone: "{{ volttron_git_force_clone | default(True) }}"
+    volttron_git_force_clone: "{{ volttron_git_force_clone | default(False) }}"
 
     ## variables related to where volttron source and platform state are stored on the node
     ###
