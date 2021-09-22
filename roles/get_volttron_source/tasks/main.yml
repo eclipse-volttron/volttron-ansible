@@ -2,12 +2,25 @@
 ### It is only responsible for updating the source, not updating what is installed.
 ### (Though an editable pip install uses symbolic links and may still update in place)
 ---
+- name: check for replaced vctl
+  stat:
+    path: "{{ volttron_root }}/volttron/platform/.control.py.recipes.moved"
+  register: stashed_vctl
+- name: restore old vctl
+  when: stashed_vctl['stat']['exists']
+  copy:
+    remote_src: true
+    src: "{{ volttron_root }}/volttron/platform/.control.py.recipes.moved"
+    dest: "{{ volttron_root }}/volttron/platform/control.py"
+  changed_when: false
+
 - name: copy volttron source from github
   when: not volttron_use_local_source
   include: from-github.yml
 - name: copy local volttron source
   when: volttron_use_local_source
   include: from-local.yml
+
 - name: check vctl version
   stat:
     path: "{{ volttron_root }}/volttron/platform/control.py"
@@ -16,8 +29,15 @@
     msg:
     - "vctl hash is: {{ vctl_stat['stat']['checksum'] }}"
   when: verbose_debug_tasks | bool
-- name: replace vctl
-  when: vctl_stat['stat']['checksum'] == "d2369e903a82ba43732ff9cc58917094743a9c44"
+- name: stash old vctl
+  copy:
+    remote_src: true
+    src: "{{ volttron_root }}/volttron/platform/control.py"
+    dest: "{{ volttron_root }}/volttron/platform/.control.py.recipes.moved"
+  changed_when: false
+- name: replace vctl if needed
   copy:
     src: volttron.platform.control.py
     dest: "{{ volttron_root }}/volttron/platform/control.py"
+  when: vctl_stat['stat']['checksum'] == "d2369e903a82ba43732ff9cc58917094743a9c44"
+  changed_when: false

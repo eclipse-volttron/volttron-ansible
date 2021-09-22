@@ -1,0 +1,3 @@
+This directory includes a mix of utility scripts, example ansible playbooks, and a complete set of configuration files for using vagrant to provision VMs and then use the tooling of this repo to deploy volttron onto those VMs.
+The scripts and components here are meant as a starting point and/or example to demonstrate how the system can be used; they have not been developed, tested, or evaluated to a standard that would make them suitable for all uses.
+Community members are encouraged to understand and modify them to meet their specific needs, and/or reach out to the core development team for assistance if needed.
