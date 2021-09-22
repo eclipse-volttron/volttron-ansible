@@ -1,0 +1,43 @@
+---
+- name: configure agents
+  hosts: all
+
+  tasks:
+
+  - name: Limit to single inventory host
+    fail:
+      msg: "update-agent is only allowed to update a single host, select one of {{ ansible_play_hosts_all }} with `-l HOST`"
+    when: (ansible_play_hosts | length) != 1
+    delegate_to: localhost
+    run_once: true
+
+  - include_role:
+      name: volttron.deployment.set_defaults
+  - name: confirm agent_identity was provided and is valid
+    fail:
+      msg: "agent_identity provided '{{ agent_identity | default('') }}' is not one of {{ identities }}; configure with `-e agent_identity=AGENT_IDENTITY` "
+    when: (agent_identity | default("")) not in identities
+    vars:
+      identities: "{{ host_configuration['agents'].keys() | default([]) }}"
+
+  - debug:
+      msg:
+      - "item is: {{ item }}"
+    vars:
+    - item: "{{ host_configuration['agents'][agent_identity] | combine({'force_install': True}, recursive=true) }}"
+
+  - include_role:
+      name: volttron.deployment.ansible_venv
+  - include_role:
+      name: volttron.deployment.copy_agent_configs
+
+  - name: update agent
+    volttron.deployment.volttron_agent:
+      volttron_root: "{{ volttron_root }}"
+      volttron_home: "{{ volttron_home }}"
+      volttron_venv: "{{ volttron_venv }}"
+      agent_vip_id: "{{ agent_identity }}"
+      agent_spec: "{{ this_spec }}"
+      agent_configs_dir: "{{ host_configs_dir }}"
+    vars:
+    - this_spec: "{{ host_configuration['agents'][agent_identity] | combine({'force_install': True}, recursive=true) }}"
