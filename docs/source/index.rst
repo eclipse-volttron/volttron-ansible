@@ -188,7 +188,7 @@ file. The search path for those is documented by ansible and includes your home 
 the working directory. In order to use python3 whenever possible it is useful to set the interpreter
 setting to ``auto`` as shown in the included file:
 
-.. literalinclude:: ../../examples/ansible.cfg
+.. literalinclude:: ../../examples/vagrant-vms/ansible.cfg
    :caption: ansible.cfg
    :language: yaml
    :linenos:
@@ -210,7 +210,7 @@ is available for use with recipes. For this example we start with a truely minim
 which consists only of the list of our three machines (where we've made the conventional choice
 that the inventory host names will match the VM names in the generated ssh configuration.
 
-.. literalinclude:: ../../examples/recipe-inventory.minimal.yml
+.. literalinclude:: ../../examples/vagrant-vms/recipe-inventory.minimal.yml
    :caption: recipe-inventory.minimal.yml
    :language: yaml
    :linenos:
@@ -222,7 +222,7 @@ matching the inventory host name. (This location is configurable via inventory v
 In this case the instance name is taken to be the inventory host name and all other configs are
 left blank. That configuration looks like:
 
-.. literalinclude:: ../../examples/web/web.yml
+.. literalinclude:: ../../examples/vagrant-vms/web/web.yml
    :caption: web/web.yml
    :language: yaml
    :linenos:
@@ -240,7 +240,7 @@ By way of a demonstration, we'll expand the minimal inventory to achieve the fol
 
 These are all achived with an inventory that looks like:
 
-.. literalinclude:: ../../examples/recipe-inventory.yml
+.. literalinclude:: ../../examples/vagrant-vms/recipe-inventory.yml
    :caption: recipe-inventory.yml
    :language: yaml
    :linenos:
@@ -253,7 +253,7 @@ Similarly, we can modify the platform configuration by updating the platform con
 For example, we'll set collector1 to use the RabbitMQ message bus by replacing the empty dictionary
 with that configuration as seen here:
 
-.. literalinclude:: ../../examples/collector1/collector1.yml
+.. literalinclude:: ../../examples/vagrant-vms/collector1/collector1.yml
    :caption: collector1/collector1.yml
    :language: yaml
    :linenos:
