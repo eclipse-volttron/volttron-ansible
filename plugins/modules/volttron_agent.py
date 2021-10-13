@@ -116,8 +116,18 @@ options:
 
 '''
 
-#TODO: add some number of examples
 EXAMPLES = '''
+## install a listener agent using values from the set_defaults role and a local host config file
+- name: install a vanilla ListenerAgent
+  volttron.deployment.volttron_agent:
+    volttron_root: "{{ volttron_root }}"
+    volttron_home: "{{ volttron_home }}"
+    volttron_venv: "{{ volttron_venv }}"
+    agent_vip_id: "listener"
+    agent_spec: "{{ this_spec }}"
+  vars:
+  - this_spec: "{{ host_configuration['agents'][listener] | combine({'force_install': True}, recursive=true) }}"
+
 '''
 
 RETURN = '''
@@ -311,7 +321,6 @@ def resolve_config_store(module, process_env):
             if name in original_store:
                 # the config store entry already exists, check it
                 desired_data = open(data_path, 'r').read()
-                # TODO
                 target_store[name] = desired_data
                 data_differs = False
                 if name.endswith('.json'):

@@ -200,7 +200,9 @@ def execute_bootstrap(module):
     if final_packages != initial_packages:
         results['changed'] = True
     if 'rabbitmq' in params['features']:
-        ## TODO is it possible to bootstrap with --rabbitmq and not cause change/disruption? I think the bootstrap script may always overwrite things, need to check.
+        ## Note: the bootstrap process is expected to always cause changes/disruptions in this case
+        ##       so we choose to always report that there was a change made. In order to be fully
+        ##       idempotent/non-disruptive, we'd need to enforce that that is true of bootstrap.py itself.
         results['changed'] = True
 
     return results
