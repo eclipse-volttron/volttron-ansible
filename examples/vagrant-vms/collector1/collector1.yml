@@ -2,7 +2,6 @@
 config: {}
   #message-bus: rmq
 
-#TODO this isn't used yet
 agents:
   listener:
     agent_state: present
