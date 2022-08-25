@@ -1,6 +1,6 @@
 ---
 - name: install VOLTTRON platform
-  hosts: all
+  hosts: "{{ on_hosts | default('all') }}"
   vars:
     volttron_source_changed: no
   roles:

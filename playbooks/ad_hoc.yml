@@ -5,6 +5,6 @@
 ##      ansible-playbook [...] path/to/ad-hoc.yml -e "command='vctl status'"
 ##      where the [...] is any normal ansible-playbook options, including inventory or limits.
 - name: install VOLTTRON platform
-  hosts: all
+  hosts: "{{ on_hosts | default('all') }}"
   roles:
   - volttron.deployment.ad_hoc
