@@ -236,6 +236,8 @@ def install_agent(module, process_env):
     module_result = {}
 
     install_cmd=[
+        f"VIRTUAL_ENV={module.params['volttron_venv']}",
+        f"PATH={os.path.join(module.params['volttron_venv'], 'bin')}:$PATH",
         os.path.join(module.params['volttron_venv'], 'bin/python'),
         os.path.join(module.params['volttron_root'], 'scripts/install-agent.py'),
         '-i', module.params['agent_vip_id'],
