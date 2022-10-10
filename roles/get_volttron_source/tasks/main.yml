@@ -16,10 +16,10 @@
 
 - name: copy volttron source from github
   when: not volttron_use_local_source
-  include: from-github.yml
+  import_tasks: from-github.yml
 - name: copy local volttron source
   when: volttron_use_local_source
-  include: from-local.yml
+  import_tasks: from-local.yml
 
 - name: check vctl version
   stat:

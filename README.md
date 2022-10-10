@@ -12,7 +12,7 @@ You can install this collection directly from the [source repository](https://do
 That would typically look like:
 
 ```
-ansible-galaxy install git+https://github.com/volttron/volttron-ansible.git
+ansible-galaxy collection install git+https://github.com/volttron/volttron-ansible.git
 ```
 
 ## Documentation

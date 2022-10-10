@@ -13,10 +13,10 @@
 
   - name: install packages on apt-based systems
     when: ansible_pkg_mgr == "apt"
-    include: apt-family.yml
+    import_tasks: apt-family.yml
   - name: install packages on yum-based system
     when: ansible_pkg_mgr == "yum"
-    include: yum-family.yml
+    import_tasks: yum-family.yml
 
 - name: ensure a distro-specific set of tasks executed
   assert:

@@ -1,6 +1,6 @@
 ---
 - name: base system install
-  hosts: all
+  hosts: "{{ on_hosts | default('all') }}"
   roles:
   - volttron.deployment.system_dependencies
   tasks:

@@ -32,13 +32,13 @@ The VOLTTRON recipes are maintained in a `dedicated github repository <github.co
 ansible-galaxy package.
 To just use the latest version of the collection, you can use install directly from github with the command::
 
-  ansible-galaxy install git+https://github.com/volttron/volttron-ansible.git
+  ansible-galaxy collection install git+https://github.com/volttron/volttron-ansible.git
 
 Note that the above requires that you have the ``git`` package installed).
 You can also clone or download the repo and install the collection from a local directory with the following comands::
 
     ansible-galaxy collection build <path/to/volttron-ansible>
-    ansible-galaxy install volttron-deployment-<version>.tar.gz
+    ansible-galaxy collection install volttron-deployment-<version>.tar.gz
 
 .. note::
    - here the first command expects a path to the root of the volttron-ansible repo and produces a local .tar.gz archive
