@@ -15,7 +15,17 @@
     ## a non-empty target list to avoid warnings and report
     ## change status correctly
     name:
+    - pip>18.1
+- name: create volttron platform venv {{ volttron_venv }}
+  pip:
+    virtualenv: "{{ volttron_venv }}"
+    virtualenv_command: "python3 -m venv"
+    ## We add setuptools here because the module needs at
+    ## a non-empty target list to avoid warnings and report
+    ## change status correctly
+    name:
     - setuptools
+    - setuptools-rust
 - name: link the platform venv
   when: volttron_venv != (volttron_root + "/env")
   file:
