@@ -4,14 +4,14 @@
 ---
 - name: check for replaced vctl
   stat:
-    path: "{{ volttron_root }}/volttron/platform/.control.py.recipes.moved"
+    path: "{{ volttron_root }}/volttron/platform/control/.control.py.recipes.moved"
   register: stashed_vctl
 - name: restore old vctl
   when: stashed_vctl['stat']['exists']
   copy:
     remote_src: true
-    src: "{{ volttron_root }}/volttron/platform/.control.py.recipes.moved"
-    dest: "{{ volttron_root }}/volttron/platform/control.py"
+    src: "{{ volttron_root }}/volttron/platform/control/.control.py.recipes.moved"
+    dest: "{{ volttron_root }}/volttron/platform/control/control.py"
   changed_when: false
 
 - name: copy volttron source from github
@@ -23,7 +23,7 @@
 
 - name: check vctl version
   stat:
-    path: "{{ volttron_root }}/volttron/platform/control.py"
+    path: "{{ volttron_root }}/volttron/platform/control/control.py"
   register: vctl_stat
 - debug:
     msg:
@@ -32,12 +32,12 @@
 - name: stash old vctl
   copy:
     remote_src: true
-    src: "{{ volttron_root }}/volttron/platform/control.py"
-    dest: "{{ volttron_root }}/volttron/platform/.control.py.recipes.moved"
+    src: "{{ volttron_root }}/volttron/platform/control/control.py"
+    dest: "{{ volttron_root }}/volttron/platform/control/.control.py.recipes.moved"
   changed_when: false
 - name: replace vctl if needed
   copy:
     src: volttron.platform.control.py
-    dest: "{{ volttron_root }}/volttron/platform/control.py"
+    dest: "{{ volttron_root }}/volttron/platform/control/control.py"
   when: vctl_stat['stat']['checksum'] == "d2369e903a82ba43732ff9cc58917094743a9c44"
   changed_when: false

@@ -7,7 +7,20 @@
 ##     better if there were a changed condition.
 ##     >> could achieve this with a custom module that checks pip freeze
 ##        from before and after each call, maybe something simpler
-- name: create volttron platform venv {{ volttron_venv }}
+- name: update pip in venv {{ volttron_venv }}
+  pip:
+    virtualenv: "{{ volttron_venv }}"
+    virtualenv_command: "python3 -m venv"
+    ## We add setuptools here because the module needs at
+    ## a non-empty target list to avoid warnings and report
+    ## change status correctly
+    name:
+    - pip>18.1
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ http_proxy }}"
+
+- name: update setuptools in venv {{ volttron_venv }}
   pip:
     virtualenv: "{{ volttron_venv }}"
     virtualenv_command: "python3 -m venv"
@@ -16,6 +29,11 @@
     ## change status correctly
     name:
     - setuptools
+    - setuptools-rust
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ http_proxy }}"
+
 - name: link the platform venv
   when: volttron_venv != (volttron_root + "/env")
   file:
