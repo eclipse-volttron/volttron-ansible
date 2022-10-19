@@ -16,6 +16,10 @@
     ## change status correctly
     name:
     - pip>18.1
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ http_proxy }}"
+
 - name: create volttron platform venv {{ volttron_venv }}
   pip:
     virtualenv: "{{ volttron_venv }}"
@@ -26,6 +30,10 @@
     name:
     - setuptools
     - setuptools-rust
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ http_proxy }}"
+
 - name: link the platform venv
   when: volttron_venv != (volttron_root + "/env")
   file:
