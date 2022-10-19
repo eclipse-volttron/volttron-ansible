@@ -7,7 +7,7 @@
 ##     better if there were a changed condition.
 ##     >> could achieve this with a custom module that checks pip freeze
 ##        from before and after each call, maybe something simpler
-- name: create volttron platform venv {{ volttron_venv }}
+- name: update pip in venv {{ volttron_venv }}
   pip:
     virtualenv: "{{ volttron_venv }}"
     virtualenv_command: "python3 -m venv"
@@ -20,7 +20,7 @@
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ http_proxy }}"
 
-- name: create volttron platform venv {{ volttron_venv }}
+- name: update setuptools in venv {{ volttron_venv }}
   pip:
     virtualenv: "{{ volttron_venv }}"
     virtualenv_command: "python3 -m venv"
