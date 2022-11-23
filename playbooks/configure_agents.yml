@@ -12,6 +12,8 @@
       volttron_root: "{{ volttron_root }}"
       volttron_home: "{{ volttron_home }}"
       volttron_venv: "{{ volttron_venv }}"
+      http_proxy: "{{http_proxy}}" 
+      https_proxy: "{{https_proxy}}"
       agent_vip_id: "{{ item.key }}"
       agent_spec: "{{ item.value }}"
       agent_configs_dir: "{{ host_configs_dir }}"

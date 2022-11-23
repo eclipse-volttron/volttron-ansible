@@ -9,6 +9,9 @@
     ansible_user: "{{ ansible_user | default(ansible_user_id) }}"
     ansible_python_interpreter: "{{ ansible_python_interpreter | default('{{discovered_interpreter_python}}') }}"
 
+    ### Variable to allow for different python interpreters between ansible and the volttron platform env.
+    python_interpreter: "{{ python_interpreter | default('{{ansible_python_interpreter}}') }}"
+
     ###
     #  [boolean] default: ``False``
     #    enable verbose ansible debug tasks
