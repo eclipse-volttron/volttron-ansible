@@ -531,6 +531,8 @@ def execute_task(module):
     subprocess_env.update({
         'VOLTTRON_HOME': module.params['volttron_home'],
         'VOLTTRON_ROOT': module.params['volttron_root'],
+        'HTTP_PROXY': module.params['http_proxy'],
+        'HTTPS_PROXY': module.params['https_proxy'],
     })
 
     existing_agents = get_platform_status(module, subprocess_env)
@@ -589,6 +591,16 @@ def run_module():
         },
         "volttron_home": {
             "type": "path",
+            "required": False,
+            "default": None,
+        },
+        "http_proxy": {
+            "type": "str",
+            "required": False,
+            "default": None,
+        },
+        "https_proxy": {
+            "type": "str",
             "required": False,
             "default": None,
         },

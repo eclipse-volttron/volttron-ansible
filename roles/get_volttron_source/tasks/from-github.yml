@@ -1,7 +1,7 @@
 ---
 - name: Clone git repo for volttron root
   ansible.builtin.git:
-    repo: https://github.com/volttron/volttron
+    repo: "{{ volttron_repo_url }}"
     dest: "{{ volttron_root }}"
     version: "{{ volttron_git_branch }}"
     force: "{{ volttron_git_force_clone }}"

@@ -10,10 +10,12 @@
 - name: update pip in venv {{ volttron_venv }}
   pip:
     virtualenv: "{{ volttron_venv }}"
-    virtualenv_command: "python3 -m venv"
+    virtualenv_command: "{{ python_interpreter }} -m venv"
     ## We add setuptools here because the module needs at
     ## a non-empty target list to avoid warnings and report
-    ## change status correctly
+    ## change status correctly. The updates are separated because
+    ## they fail when they are listed together. Probably an
+    ## ordering thing.
     name:
     - pip>18.1
   environment:
@@ -23,7 +25,7 @@
 - name: update setuptools in venv {{ volttron_venv }}
   pip:
     virtualenv: "{{ volttron_venv }}"
-    virtualenv_command: "python3 -m venv"
+    virtualenv_command: "{{ python_interpreter }} -m venv"
     ## We add setuptools here because the module needs at
     ## a non-empty target list to avoid warnings and report
     ## change status correctly
