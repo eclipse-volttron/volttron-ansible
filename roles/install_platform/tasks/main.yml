@@ -22,20 +22,6 @@
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ http_proxy }}"
 
-- name: update setuptools in venv {{ volttron_venv }}
-  pip:
-    virtualenv: "{{ volttron_venv }}"
-    virtualenv_command: "{{ python_interpreter }} -m venv"
-    ## We add setuptools here because the module needs at
-    ## a non-empty target list to avoid warnings and report
-    ## change status correctly
-    name:
-    - setuptools
-    - setuptools-rust
-  environment:
-    http_proxy: "{{ http_proxy }}"
-    https_proxy: "{{ http_proxy }}"
-
 - name: link the platform venv
   when: volttron_venv != (volttron_root + "/env")
   file:
@@ -43,28 +29,24 @@
     dest: "{{ volttron_root }}/env"
     state: link
 
-- name: bootstrap the VOLTTRON environment
-  volttron_bootstrap:
-    volttron_root: "{{volttron_root}}"
-    features:
-    - "{{ (host_configuration['config']['bind-web-address'] is defined) | ternary('web', None) }}"
-    - "{{ (message_bus == 'rmq') | ternary('rabbitmq', None) }}"
-    - "{{ volttron_features }}"
-  register: v_b_result
+-name: install the VOLTTRON platform
+  pip:
+    virtualenv: "{{ volttron_venv }}"
+    virtualenv_command: "{{ python_interpreter }} -m venv"
+    name:
+      - volttron # TODO: add version
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ http_proxy }}"
-- debug:
-    msg: "{{ v_b_result.command }}"
-  when: verbose_debug_tasks | bool
 
-- name: Install extra requirements for this instance
-  pip:
-    virtualenv: "{{ volttron_venv }}"
-    name: "{{ extra_requirements }}"
-  environment:
-    HTTP_PROXY: "{{ http_proxy }}"
-  when: (extra_requirements | length) > 0
+# NOTE: I don't think this is necessary anymore.
+# - name: Install extra requirements for this instance
+#   pip:
+#     virtualenv: "{{ volttron_venv }}"
+#     name: "{{ extra_requirements }}"
+#   environment:
+#     HTTP_PROXY: "{{ http_proxy }}"
+#   when: (extra_requirements | length) > 0
 
 - name: create environment activation script
   template:
