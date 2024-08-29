@@ -147,6 +147,7 @@
     - "volttron_git_repo {{ volttron_git_repo }}"
     - "volttron_git_branch {{ volttron_git_branch }}"
     - "volttron_home {{ volttron_home }}"
+    - "volttron_log_file {{ volttron_log_file }}"
     - "volttron_root {{ volttron_root }}"
     - "volttron_venv {{ volttron_venv }}"
     - "platform_state {{ platform_state }}"

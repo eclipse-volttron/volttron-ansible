@@ -44,6 +44,7 @@
 import os
 import psutil
 import subprocess
+import time
 
 ANSIBLE_METADATA = {
     'metadata_version': '1.1',
@@ -62,10 +63,15 @@ description:
     - Note that there is no 'restart' state (that would not be idempotent), you can use two tasks to set "stopped" immediately followed by "running"
 
 options:
-    volttron_root:
+    volttron_venv:
         description:
-            - path to the VOLTTRON source tree (where start_volttron and stop_volttron are found)
-        default: $HOME/volttron
+            - path to the VOLTTRON venv directory where the python environment is installed
+        default: $HOME/volttron.venv
+        type: string
+    volttron_log_file:
+        description:
+            - path to the location to write the VOLTTRON log file
+        default: $HOME/.volttron/volttron.log
         type: string
     volttron_home:
         description:
@@ -87,7 +93,7 @@ EXAMPLES = '''
 # Start the platform
 - name: Start platform
   volttron_platform:
-    volttron_root: /home/username/volttron
+    volttron_venv: /home/username/volttron.venv
     state: running
 
 '''
@@ -119,7 +125,7 @@ def update_logical_defaults(module):
     Compute the as-documented default values for parameters assigned a default
     'None' value by the ansible interface.
 
-    Programmatically, the default value assigned by ansible to these variables (volttron_root,
+    Programmatically, the default value assigned by ansible to these variables (volttron_venv,
     and volttron_env) is None. When that is the case, we need to use other configurations
     and the runtime environment to compute the literal value of those parameters as documented.
 
@@ -129,8 +135,8 @@ def update_logical_defaults(module):
     '''
     params = module.params
 
-    if params['volttron_root'] is None:
-        params['volttron_root'] = f'{os.path.join(os.path.expanduser("~"), "volttron")}'
+    if params['volttron_venv'] is None:
+        params['volttron_venv'] = f'{os.path.join(os.path.expanduser("~"), "volttron.venv/bin")}'
     if params['volttron_home'] is None:
         params['volttron_home'] = f'{os.path.join(os.path.expanduser("~"), ".volttron")}'
 
@@ -172,9 +178,12 @@ def execute_task(module):
     params = module.params
 
     available_scripts = {
-        "running": "volttron -l {logfile}".format(logfile=params[volttron_log_file]),
-        "stopped": "volttron-ctl shutdown --platform",
+#        "running": "./volttron -l {logfile} > /dev/null 2>&1&; disown".format(logfile=params['volttron_log_file']),
+#        "running": "./volttron > /dev/null 2>&1&; disown",
+        "running": "{volttron_venv}/python -m volttron.server -l {logfile} &;disown",
+        "stopped": "{volttron_venv}/python -m volttron.client.commands shutdown --platform",
     }
+
 
     is_running = False
     pid_file_path = os.path.join(params['volttron_home'], 'VOLTTRON_PID')
@@ -197,7 +206,7 @@ def execute_task(module):
         ],
         stdout = subprocess.PIPE,
         stderr = subprocess.PIPE,
-        cwd = params['volttron_root'],
+        cwd = params['volttron_venv'],
         env = subprocess_env,
         preexec_fn=os.setpgrp,
     )
@@ -209,6 +218,7 @@ def execute_task(module):
         'changed': True,
     })
 
+    time.sleep(5)
     # if script failed, propagate failure
     if script_result.returncode != 0:
         module.fail_json(msg=f'{available_scripts[params["state"]]} returned an error', **results)
@@ -243,11 +253,16 @@ def run_module():
     # define available arguments/parameters a user can pass to the module
     # these should match the DOCUMENTATION above
     module_args = {
-        "volttron_root": {
+        "volttron_venv": {
             "type": "str",
             "default": None,
         },
         "volttron_home": {
+            "type": "str",
+            "required": False,
+            "default": None,
+        },
+        "volttron_log_file": {
             "type": "str",
             "required": False,
             "default": None,
