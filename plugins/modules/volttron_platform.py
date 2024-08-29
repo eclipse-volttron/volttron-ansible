@@ -172,8 +172,8 @@ def execute_task(module):
     params = module.params
 
     available_scripts = {
-        "running": "./start-volttron",
-        "stopped": "./stop-volttron",
+        "running": "volttron -l {logfile}".format(logfile=params[volttron_log_file]),
+        "stopped": "volttron-ctl shutdown --platform",
     }
 
     is_running = False

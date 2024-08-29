@@ -53,6 +53,10 @@
     #  [string - path] default: ``$HOME/.volttron``
     #    path to the VOLTTRON home where all platform runtime files are stored
     volttron_home: "{{ volttron_home | default('{{ ansible_env.HOME }}/.volttron') | regex_replace('^~\/', '{{ ansible_env.HOME }}/') }}"
+
+    #  [string - path] default: ``$HOME/.volttron/volttron.log``
+    #    Path to the volttron log file.
+    volttron_log_file: "{{ volttron_log_file | default('{{volttron_home}}/volttron.log') }}"
     ###
     #  [string - path] default: ``$HOME/volttron``
     #    path to the volttron root directory where VOLTTRON source is placed
