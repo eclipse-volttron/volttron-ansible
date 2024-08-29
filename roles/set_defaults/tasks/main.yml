@@ -36,17 +36,19 @@
     #  [string] default ``https://github.com/volttron/volttron.git``
     #    The repo url to use when cloning the volttron source.
     volttron_repo_url: "{{ volttron_repo_url | default('https://github.com/volttron/volttron.git') }}"
+
+    # volttron_git_organization: "{{ volttron_git_organization | default('volttron') }}"
     ###
     #  [string] default: ``main``
     #    The branch portion of the source url used to retrieve the VOLTTRON source.
     #    The full url is of the form
     #    ``https://github.com/{{ volttron_git_organization }}/{{ volttron_git_repo }}/archive/{{ volttron_git_branch }}.tar.gz``
-    volttron_git_branch: "{{ volttron_git_branch | default('main') }}"
+    # volttron_git_branch: "{{ volttron_git_branch | default('main') }}"
     ###
     #  [bool] default: ``false``
     #    Enable the force flag when cloning and/or updating volttron root.
     #    If true, will discard any local changes to tracked files (but does retain untracked files).
-    volttron_git_force_clone: "{{ volttron_git_force_clone | default(False) }}"
+    # volttron_git_force_clone: "{{ volttron_git_force_clone | default(False) }}"
 
     ## variables related to where volttron source and platform state are stored on the node
     ###
@@ -143,9 +145,9 @@
     - "extra_system_packages {{ extra_system_packages }}"
     - "venv_for_ansible {{ venv_for_ansible }}"
     - "volttron_use_local_source {{ volttron_use_local_source }}"
-    - "volttron_git_organization {{ volttron_git_organization }}"
-    - "volttron_git_repo {{ volttron_git_repo }}"
-    - "volttron_git_branch {{ volttron_git_branch }}"
+    #    - "volttron_git_organization {{ volttron_git_organization }}"
+    #    - "volttron_git_repo {{ volttron_git_repo }}"
+    #    - "volttron_git_branch {{ volttron_git_branch }}"
     - "volttron_home {{ volttron_home }}"
     - "volttron_log_file {{ volttron_log_file }}"
     - "volttron_root {{ volttron_root }}"
