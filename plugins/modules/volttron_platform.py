@@ -178,10 +178,10 @@ def execute_task(module):
     params = module.params
 
     available_scripts = {
-#        "running": "./volttron -l {logfile} > /dev/null 2>&1&; disown".format(logfile=params['volttron_log_file']),
-#        "running": "./volttron > /dev/null 2>&1&; disown",
-        "running": "{volttron_venv}/python -m volttron.server -l {logfile} &;disown",
-        "stopped": "{volttron_venv}/python -m volttron.client.commands shutdown --platform",
+        "running": [
+            "{volttron_venv}/bin/start-volttron".format(volttron_venv=params['volttron_venv'])],
+        "stopped": ["{volttron_venv}/bin/python -m volttron.client.commands shutdown --platform"],
+
     }
 
 
@@ -201,9 +201,7 @@ def execute_task(module):
         'VOLTTRON_HOME': params['volttron_home'],
     })
     script_result = subprocess.run(
-        args = [
-            available_scripts[params['state']],
-        ],
+        args = available_scripts[params['state']],
         stdout = subprocess.PIPE,
         stderr = subprocess.PIPE,
         cwd = params['volttron_venv'],
