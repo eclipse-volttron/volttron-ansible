@@ -53,6 +53,12 @@
     src: activate-instance-env.j2
     dest: "{{ ansible_env.HOME }}/activate-{{ instance_name }}-env"
 
+- name: create start-volttron script
+  template:
+    src: start-volttron.j2
+    dest: "{{ volttron_venv }}/bin/start-volttron"
+    mode: 0755
+
 # configure the platform
 - name: ensure VOLTTRON_HOME exists
   file:
