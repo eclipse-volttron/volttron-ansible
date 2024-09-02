@@ -216,7 +216,7 @@ def execute_task(module):
         'changed': True,
     })
 
-    time.sleep(5)
+    time.sleep(8)
     # if script failed, propagate failure
     if script_result.returncode != 0:
         module.fail_json(msg=f'{available_scripts[params["state"]]} returned an error', **results)

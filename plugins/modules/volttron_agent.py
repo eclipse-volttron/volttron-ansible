@@ -68,15 +68,10 @@ description:
     - Note, this module assumes that there is a running platform available for it to interact with.
 
 options:
-    volttron_root:
-        description:
-            - path to the VOLTTRON source tree (where start_volttron and stop_volttron are found)
-        default: $HOME/volttron
-        type: path
     volttron_venv:
         description:
             - path to the virtual environment where VOLTTRON is installed
-        default: $volttron_root/env
+        default: $HOME/volttron.venv
         type: path
     volttron_home:
         description:
@@ -120,7 +115,6 @@ EXAMPLES = '''
 ## install a listener agent using values from the set_defaults role and a local host config file
 - name: install a vanilla ListenerAgent
   volttron.deployment.volttron_agent:
-    volttron_root: "{{ volttron_root }}"
     volttron_home: "{{ volttron_home }}"
     volttron_venv: "{{ volttron_venv }}"
     agent_vip_id: "listener"
@@ -145,7 +139,7 @@ def update_logical_defaults(module):
     Compute the as-documented default values for parameters assigned a default
     'None' value by the ansible interface.
 
-    Programmatically, the default value assigned by ansible to these variables (volttron_root,
+    Programmatically, the default value assigned by ansible to these variables (
     and volttron_venv) is None. When that is the case, we need to use other configurations
     and the runtime environment to compute the literal value of those parameters as documented.
 
@@ -155,10 +149,8 @@ def update_logical_defaults(module):
     '''
     params = module.params
 
-    if params['volttron_root'] is None:
-        params['volttron_root'] = f'{os.path.join(os.path.expanduser("~"), "volttron")}'
     if params['volttron_venv'] is None:
-        params['volttron_venv'] = os.path.join(params['volttron_root'], 'env')
+        params['volttron_venv'] = os.path.join(os.path.expanduser("~"), 'env')
     if params['volttron_home'] is None:
         params['volttron_home'] = f'{os.path.join(os.path.expanduser("~"), ".volttron")}'
     if params['agent_configs_dir'] is None:
@@ -183,7 +175,7 @@ def get_platform_status(module, process_env):
         ],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        cwd=params['volttron_root'],
+        cwd=params['volttron_venv'],
         env=process_env,
     )
     if cmd_result.returncode == 2 and "unrecognized arguments: --json" in cmd_result.stderr.decode('utf-8'):
@@ -214,7 +206,7 @@ def remove_agent(agent_uuid, params, process_env):
         ],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        cwd=params['volttron_root'],
+        cwd=params['volttron_venv'],
         env=process_env,
         check=True,
     )
@@ -239,11 +231,9 @@ def install_agent(module, process_env):
         f"VIRTUAL_ENV={module.params['volttron_venv']}",
         f"PATH={os.path.join(module.params['volttron_venv'], 'bin')}:$PATH",
         os.path.join(module.params['volttron_venv'], 'bin/python'),
-        os.path.join(module.params['volttron_root'], 'scripts/install-agent.py'),
-        '-i', module.params['agent_vip_id'],
-        '-vh', module.params['volttron_home'],
-        '-vr', module.params['volttron_root'],
-        '-s', module_spec['agent_source'],
+        '-m', 'volttron.client.commands.control', 'install'
+        '--vip-identity', module.params['agent_vip_id'],
+        #TODO Need the volttron module here
     ]
     if module_spec.get('skip_requirements', False):
         install_cmd.append('--skip-requirements')
@@ -257,10 +247,13 @@ def install_agent(module, process_env):
     if module_spec.get('agent_config', False):
         install_cmd.extend(['--config', module_spec['agent_config']])
     if module_spec.get('agent_tag', ''):
-        install_cmd.extend(['-t', module_spec['agent_tag']])
+        install_cmd.extend(['--tag', module_spec['agent_tag']])
     try:
         module_result['command'] = ' '.join(install_cmd)
         module_result['process_env'] = process_env
+        process_env.update({
+            'VOLTTRON_HOME': params['volttron_home'],
+        })
         cmd_result = subprocess.run(
             args=' '.join(install_cmd),
             stdout=subprocess.PIPE,
@@ -458,7 +451,7 @@ def remove_config_store(module, process_env, identity, stored_name):
         args=cmd,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        cwd=module.params['volttron_root'],
+        cwd=f'{module.params["volttron_venv"]}/bin',
         env=process_env,
     )
     if cmd_result.returncode:
@@ -498,7 +491,7 @@ def add_config_store(module, process_env, identity, stored_name, file_path):
         args=cmd,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        cwd=module.params['volttron_root'],
+        cwd=f'{module.params["volttron_venv"]}/bin',
         env=process_env,
     )
     if cmd_result.returncode:
@@ -581,8 +574,8 @@ def run_module():
     '''
 
     module_args = {
-        "volttron_root": {
-            "type": "path",
+        "volttron_pypi_package": {
+            "type": "str",
             "default": None,
         },
         "volttron_venv": {
