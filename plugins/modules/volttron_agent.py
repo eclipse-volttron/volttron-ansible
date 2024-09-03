@@ -231,9 +231,9 @@ def install_agent(module, process_env):
         f"VIRTUAL_ENV={module.params['volttron_venv']}",
         f"PATH={os.path.join(module.params['volttron_venv'], 'bin')}:$PATH",
         os.path.join(module.params['volttron_venv'], 'bin/python'),
-        '-m', 'volttron.client.commands.control', 'install'
+        '-m', 'volttron.client.commands.control', 'install',
         '--vip-identity', module.params['agent_vip_id'],
-        #TODO Need the volttron module here
+        f'{ module_spec["agent_pypi_package"] }'
     ]
     if module_spec.get('skip_requirements', False):
         install_cmd.append('--skip-requirements')
@@ -245,7 +245,7 @@ def install_agent(module, process_env):
     if module_spec.get('agent_running', False):
         install_cmd.append('--start')
     if module_spec.get('agent_config', False):
-        install_cmd.extend(['--config', module_spec['agent_config']])
+        install_cmd.extend(['--agent-config', module_spec['agent_config']])
     if module_spec.get('agent_tag', ''):
         install_cmd.extend(['--tag', module_spec['agent_tag']])
     try:
@@ -523,7 +523,6 @@ def execute_task(module):
     subprocess_env = dict(os.environ)
     subprocess_env.update({
         'VOLTTRON_HOME': module.params['volttron_home'],
-        'VOLTTRON_ROOT': module.params['volttron_root'],
         'HTTP_PROXY': module.params['http_proxy'],
         'HTTPS_PROXY': module.params['https_proxy'],
     })
@@ -574,7 +573,7 @@ def run_module():
     '''
 
     module_args = {
-        "volttron_pypi_package": {
+        "agent_pypi_package": {
             "type": "str",
             "default": None,
         },
