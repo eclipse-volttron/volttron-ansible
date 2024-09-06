@@ -11,6 +11,6 @@ if [ "$1" = '--rotating' ]; then
     disown
 else
     echo "Starting VOLTTRON verbosely in the background"
-    volttron -vv -l $VOLTTRON_HOME/volttron.log > $VOLTTRON_HOME/volttron.log 2>&1 &
+    volttron -vv -l $VOLTTRON_HOME/volttron.log > /dev/null 2>&1 &
     disown
 fi
