@@ -241,15 +241,26 @@ def pip_install_package(module, process_env, packageName):
         cmd_result = subprocess.run(
             args=' '.join(install_cmd),
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,                                                                                                                                               cwd=module.params['agent_configs_dir'],
+            stderr=subprocess.PIPE,
+            cwd=module.params['agent_configs_dir'],
             env=process_env,
-            shell=True,                                                                                                                                                           timeout=module.params['time_limit'],
+            shell=True,
+            timeout=module.params['time_limit'],
         )
-        module_result.pop('process_env')                                                                                                                                  except subprocess.TimeoutExpired:
-        module.fail_json(msg=f"agent install script timed out installing post packages ({module.params['time_limit']})",
-                         command=' '.join(install_cmd),                                                                                                                                        process_env=process_env,                                                                                                                                             )                                                                                                                                                 except Exception as e:                                                                                                                                                    module.fail_json(msg=f"subprocess to install agent post packages failed with unhandled exception: {repr(e)}",                                                                          command=' '.join(install_cmd),                                                                                                                                        process_env=process_env,
+        module_result.pop('process_env')
+    except subprocess.TimeoutExpired:
+        module.fail_json(msg=f"agent install script timed out installing pip packages ({module.params['time_limit']})",
+                         command=' '.join(install_cmd),
+                         process_env=process_env,
                         )
-    module_result.update({                                                                                                                                                    'command': cmd_result.args,                                                                                                                                           'return_code': cmd_result.returncode,
+    except Exception as e:
+        module.fail_json(msg=f"subprocess to install agent pip packages failed with unhandled exception: {repr(e)}",
+                         command=' '.join(install_cmd),
+                         process_env=process_env,
+                        )
+    module_result.update({
+        'command': cmd_result.args,
+        'return_code': cmd_result.returncode,
         'stdout': cmd_result.stdout.decode(),
         'stderr': cmd_result.stderr.decode(),
         'changed': True,
@@ -259,7 +270,6 @@ def pip_install_package(module, process_env, packageName):
 
 def poetry_install_package(packageName):
     pass
-
 
 def install_agent(module, process_env):
     '''
@@ -551,6 +561,19 @@ def add_config_store(module, process_env, identity, stored_name, file_path):
 
     return module_result
 
+def install_packages(module, process_env, packages):
+    results = {}
+    for package in packages:
+        if 'pip' in package:
+            results.update(pip_install_package(module=module, process_env=subprocess_env, packageName=package['pip']))
+            if results['return_code']:
+                module.fail_json(msg='agent post install failed', subprocess_details=results)
+        elif 'poetry' in package:
+            results.update(poetry_install_package(module=module, process_env=subprocess_env, packageName=package['poetry']))
+            if results['return_code']:
+                module.fail_json(msg='agent post install failed', subprocess_details=results)
+    return results
+
 def execute_task(module):
     '''
     '''
@@ -575,25 +598,22 @@ def execute_task(module):
         if agent_vip_id in existing_agents and not (module.params['agent_spec'].get('force_install', False)):
             pass
         else:
+            # Install the pre install packages
+            if 'agent_pre_install_packages' in agent_spec: # process packages that need to be installed after the agent is installed
+                packages = agent_spec['agent_pre_install_packages']
+                results.update(install_packages(module, subprocess_env, packages))
             results.update(install_agent(module=module, process_env=subprocess_env))
             if results['return_code']:
                 module.fail_json(msg='install agent failed', subprocess_details=results)
+            # Install the post install packages
+            if 'agent_post_install_packages' in agent_spec: # process packages that need to be installed after the agent is installed
+                packages = agent_spec['agent_post_install_packages']
+                results.update(install_packages(module, subprocess_env, packages))
         if agent_spec['agent_config_store']:
             results.update(resolve_config_store(module=module, process_env=subprocess_env))
             results.update({'zzzz_config_store': True})
         else:
             pass
-        if 'agent_post_install_packages' in agent_spec: # process packages that need to be installed after the agent is installed
-            packages = agent_spec['agent_post_install_packages']
-            for package in packages:
-                if 'pip' in package:
-                    results.update(pip_install_package(module=module, process_env=subprocess_env, packageName=package['pip']))
-                    if results['return_code']:
-                        module.fail_json(msg='agent post install failed', subprocess_details=results)
-                elif 'poetry' in package:
-                    results.update(poetry_install_package(module=module, process_env=subprocess_env, packageName=package['poetry']))
-                    if results['return_code']:
-                        module.fail_json(msg='agent post install failed', subprocess_details=results)
 
     elif agent_spec['agent_state'] == 'absent':
         if agent_vip_id not in existing_agents:
