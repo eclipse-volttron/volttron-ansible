@@ -12,7 +12,7 @@ You can install this collection directly from the [source repository](https://do
 That would typically look like:
 
 ```
-ansible-galaxy collection install git+https://github.com/volttron/volttron-ansible.git
+ansible-galaxy collection install git+https://github.com/eclipse-volttron/volttron-ansible.git
 ```
 
 ## Documentation
@@ -25,4 +25,3 @@ As always, VOLTTRON community members are encouraged to engage with the core tea
 This can be done through typical channels:
 - stack overflow questions tagged with 'volttron'
 - email ([web submission form](volttron.org/contact) is available)
-- slack (use the above email form to request access if you're not already a member)
