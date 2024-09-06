@@ -561,7 +561,7 @@ def add_config_store(module, process_env, identity, stored_name, file_path):
 
     return module_result
 
-def install_packages(module, process_env, packages):
+def install_packages(module, subprocess_env, packages):
     results = {}
     for package in packages:
         if 'pip' in package:
