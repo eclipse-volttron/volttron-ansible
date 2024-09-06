@@ -179,6 +179,7 @@ def execute_task(module):
 
     available_scripts = {
         "running": [
+            '.',
             "{volttron_venv}/bin/start-volttron".format(volttron_venv=params['volttron_venv'])],
         "stopped": ["{volttron_venv}/bin/python -m volttron.client.commands shutdown --platform"],
 
@@ -201,10 +202,12 @@ def execute_task(module):
         'VOLTTRON_HOME': params['volttron_home'],
     })
     script_result = subprocess.run(
-        args = available_scripts[params['state']],
+        args = " ".join(available_scripts[params['state']]),
         stdout = subprocess.PIPE,
         stderr = subprocess.PIPE,
+        shell = True,
         cwd = params['volttron_venv'],
+        executable = '/bin/bash',
         env = subprocess_env,
         preexec_fn=os.setpgrp,
     )

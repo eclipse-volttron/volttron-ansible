@@ -5,12 +5,6 @@ SCRIPT_DIR="$( cd "$( echo "${BASH_SOURCE[0]%/*}" )" && pwd )"
 # Activate environment
 source "$SCRIPT_DIR/activate"
 
-if [ "$1" = '--rotating' ]; then
-    echo "Starting VOLTTRON with rotatinglog.py in the background."
-    volttron -L examples/rotatinglog.py > volttron.log 2>&1 &
-    disown
-else
-    echo "Starting VOLTTRON verbosely in the background"
-    volttron -vv -l $VOLTTRON_HOME/volttron.log > /dev/null 2>&1 &
-    disown
-fi
+echo "Starting VOLTTRON verbosely in the background"
+exec volttron -vv -l $VOLTTRON_HOME/volttron.log > /dev/null 2>&1 &
+disown
