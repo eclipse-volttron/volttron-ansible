@@ -2,11 +2,6 @@
 #  vars:
 #    volttron_source_changed: no
 
-##NOTE there is no way to tell if the bootstrap steps are producing
-##     changes or not, this is not idiomatic ansible. It would be
-##     better if there were a changed condition.
-##     >> could achieve this with a custom module that checks pip freeze
-##        from before and after each call, maybe something simpler
 - name: update pip in venv {{ volttron_venv }}
   pip:
     virtualenv: "{{ volttron_venv }}"
@@ -31,15 +26,6 @@
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ http_proxy }}"
-
-# NOTE: I don't think this is necessary anymore.
-# - name: Install extra requirements for this instance
-#   pip:
-#     virtualenv: "{{ volttron_venv }}"
-#     name: "{{ extra_requirements }}"
-#   environment:
-#     HTTP_PROXY: "{{ http_proxy }}"
-#   when: (extra_requirements | length) > 0
 
 - name: create environment activation script
   template:

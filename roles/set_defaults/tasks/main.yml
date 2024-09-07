@@ -73,17 +73,6 @@
     host_configs_dir: "{{ host_configs_dir | default('{{ ansible_env.HOME }}/configs') }}"
 
     ###
-    #  [list of strings] default: ``[]``
-    #    List of available feature sets to include when bootstrapping the remote volttron platform.
-    #    Any valid double-dash flags to the ``bootstrap.py`` script may be listed here (without the
-    #    double dash flag marking).
-    volttron_features: "{{ volttron_features | default([]) }}"
-    ###
-    #  [list of strings] default: ``[]``
-    #    A list of extra python packages to install into the VOLTTRON virtual environment
-    extra_requirements: "{{ extra_requirements | default([]) }}"
-
-    ###
     #  [string] default: ``''``
     #    Configurable http proxy passed to pip when installing extra packages
     http_proxy: "{{ http_proxy | default('') }}"
@@ -141,16 +130,11 @@
     - "extra_system_packages {{ extra_system_packages }}"
     - "venv_for_ansible {{ venv_for_ansible }}"
     - "volttron_use_local_source {{ volttron_use_local_source }}"
-    #    - "volttron_git_organization {{ volttron_git_organization }}"
-    #    - "volttron_git_repo {{ volttron_git_repo }}"
-    #    - "volttron_git_branch {{ volttron_git_branch }}"
     - "volttron_home {{ volttron_home }}"
     - "volttron_log_file {{ volttron_log_file }}"
     - "volttron_venv {{ volttron_venv }}"
     - "platform_state {{ platform_state }}"
     - "host_configs_dir {{ host_configs_dir }}"
-    - "volttron_features {{ volttron_features }}"
-    - "extra_requirements {{ extra_requirements }}"
     - "http_proxy {{ http_proxy }}"
     - "erlang_package_version {{ erlang_package_version }}"
     - "deployment_config_root {{ deployment_config_root }}"

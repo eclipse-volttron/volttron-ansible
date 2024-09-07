@@ -317,7 +317,7 @@ def run_module():
     try:
         result.update(execute_task(module))
     except Exception as e:
-        module.fail_json(msg='volttron_bootstrap had an unhandled exception', error=repr(e))
+        module.fail_json(msg='volttron_platform had an unhandled exception', error=repr(e))
 
     # in the event of a successful module execution, you will want to
     # simple AnsibleModule.exit_json(), passing the key/value results
