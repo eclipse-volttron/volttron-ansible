@@ -22,13 +22,6 @@
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ http_proxy }}"
 
-# - name: link the platform venv
-#   when: volttron_venv != (volttron_root + "/env")
-#   file:
-#     src: "{{ volttron_venv }}"
-#     dest: "{{ volttron_root }}/env"
-#     state: link
-
 - name: install the VOLTTRON platform
   pip:
     virtualenv: "{{ volttron_venv }}"

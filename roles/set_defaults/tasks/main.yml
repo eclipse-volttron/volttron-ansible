@@ -60,10 +60,6 @@
     #    Path to the volttron log file.
     volttron_log_file: "{{ volttron_log_file | default('{{volttron_home}}/volttron.log') }}"
     ###
-    #  [string - path] default: ``$HOME/volttron``
-    #    path to the volttron root directory where VOLTTRON source is placed
-    volttron_root: "{{ volttron_root | default('{{ ansible_env.HOME }}/volttron') | regex_replace('^~\/', '{{ ansible_env.HOME }}/') }}"
-    ###
     #  [string - path] default: ``$HOME/volttron.venv``
     #    path to the python virtual environment into which the VOLTTRON package will be installed
     volttron_venv: "{{ volttron_venv | default('{{ ansible_env.HOME }}/volttron.venv') | regex_replace('^~\/', '{{ ansible_env.HOME }}/') }}"
@@ -150,7 +146,6 @@
     #    - "volttron_git_branch {{ volttron_git_branch }}"
     - "volttron_home {{ volttron_home }}"
     - "volttron_log_file {{ volttron_log_file }}"
-    - "volttron_root {{ volttron_root }}"
     - "volttron_venv {{ volttron_venv }}"
     - "platform_state {{ platform_state }}"
     - "host_configs_dir {{ host_configs_dir }}"
