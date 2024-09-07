@@ -182,7 +182,7 @@ def execute_task(module):
             '.',
             "{volttron_venv}/bin/start-volttron".format(volttron_venv=params['volttron_venv'])],
         "stopped": [
-            "{volttron_venv}/bin/python",
+            f"{params['volttron_venv']}/bin/python",
             "-m",
             "volttron.client.commands.control",
             "shutdown",
