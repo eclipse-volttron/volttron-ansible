@@ -23,5 +23,7 @@ Documentation of the components here is rendered on [Read the Docs](https://volt
 
 As always, VOLTTRON community members are encouraged to engage with the core team if you have questions about these features or require assistance.
 This can be done through typical channels:
+
+- [Eclipse VOLTTRON Mailing List](https://accounts.eclipse.org/mailing-list/volttron-dev)
 - stack overflow questions tagged with 'volttron'
-- email ([web submission form](volttron.org/contact) is available)
+- email [volttron@pnnl.gov](mailto:volttron@pnnl.gov)
