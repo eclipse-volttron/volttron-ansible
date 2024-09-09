@@ -36,27 +36,29 @@
     #  [string] default ``https://github.com/volttron/volttron.git``
     #    The repo url to use when cloning the volttron source.
     volttron_repo_url: "{{ volttron_repo_url | default('https://github.com/volttron/volttron.git') }}"
+
+    # volttron_git_organization: "{{ volttron_git_organization | default('volttron') }}"
     ###
     #  [string] default: ``main``
     #    The branch portion of the source url used to retrieve the VOLTTRON source.
     #    The full url is of the form
     #    ``https://github.com/{{ volttron_git_organization }}/{{ volttron_git_repo }}/archive/{{ volttron_git_branch }}.tar.gz``
-    volttron_git_branch: "{{ volttron_git_branch | default('main') }}"
+    # volttron_git_branch: "{{ volttron_git_branch | default('main') }}"
     ###
     #  [bool] default: ``false``
     #    Enable the force flag when cloning and/or updating volttron root.
     #    If true, will discard any local changes to tracked files (but does retain untracked files).
-    volttron_git_force_clone: "{{ volttron_git_force_clone | default(False) }}"
+    # volttron_git_force_clone: "{{ volttron_git_force_clone | default(False) }}"
 
     ## variables related to where volttron source and platform state are stored on the node
     ###
     #  [string - path] default: ``$HOME/.volttron``
     #    path to the VOLTTRON home where all platform runtime files are stored
     volttron_home: "{{ volttron_home | default('{{ ansible_env.HOME }}/.volttron') | regex_replace('^~\/', '{{ ansible_env.HOME }}/') }}"
-    ###
-    #  [string - path] default: ``$HOME/volttron``
-    #    path to the volttron root directory where VOLTTRON source is placed
-    volttron_root: "{{ volttron_root | default('{{ ansible_env.HOME }}/volttron') | regex_replace('^~\/', '{{ ansible_env.HOME }}/') }}"
+
+    #  [string - path] default: ``$HOME/.volttron/volttron.log``
+    #    Path to the volttron log file.
+    volttron_log_file: "{{ volttron_log_file | default('{{volttron_home}}/volttron.log') }}"
     ###
     #  [string - path] default: ``$HOME/volttron.venv``
     #    path to the python virtual environment into which the VOLTTRON package will be installed
@@ -69,17 +71,6 @@
     #  [string - path] default: ``$HOME/configs``
     #    Path on the managed host where agent-related configuration files are placed
     host_configs_dir: "{{ host_configs_dir | default('{{ ansible_env.HOME }}/configs') }}"
-
-    ###
-    #  [list of strings] default: ``[]``
-    #    List of available feature sets to include when bootstrapping the remote volttron platform.
-    #    Any valid double-dash flags to the ``bootstrap.py`` script may be listed here (without the
-    #    double dash flag marking).
-    volttron_features: "{{ volttron_features | default([]) }}"
-    ###
-    #  [list of strings] default: ``[]``
-    #    A list of extra python packages to install into the VOLTTRON virtual environment
-    extra_requirements: "{{ extra_requirements | default([]) }}"
 
     ###
     #  [string] default: ``''``
@@ -139,16 +130,11 @@
     - "extra_system_packages {{ extra_system_packages }}"
     - "venv_for_ansible {{ venv_for_ansible }}"
     - "volttron_use_local_source {{ volttron_use_local_source }}"
-    - "volttron_git_organization {{ volttron_git_organization }}"
-    - "volttron_git_repo {{ volttron_git_repo }}"
-    - "volttron_git_branch {{ volttron_git_branch }}"
     - "volttron_home {{ volttron_home }}"
-    - "volttron_root {{ volttron_root }}"
+    - "volttron_log_file {{ volttron_log_file }}"
     - "volttron_venv {{ volttron_venv }}"
     - "platform_state {{ platform_state }}"
     - "host_configs_dir {{ host_configs_dir }}"
-    - "volttron_features {{ volttron_features }}"
-    - "extra_requirements {{ extra_requirements }}"
     - "http_proxy {{ http_proxy }}"
     - "erlang_package_version {{ erlang_package_version }}"
     - "deployment_config_root {{ deployment_config_root }}"

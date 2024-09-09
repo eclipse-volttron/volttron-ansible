@@ -19,7 +19,6 @@
   shell:
     cmd: "{{ volttron_venv }}/bin/venv_execute {{ command }}"
   environment:
-    VOLTTRON_ROOT: "{{ volttron_root }}"
     VOLTTRON_HOME: "{{ volttron_home }}"
   ignore_errors: True
   register: cmd_results

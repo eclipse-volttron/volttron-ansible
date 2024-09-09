@@ -12,11 +12,10 @@
   - retrieved_archive_dest_prefix: "archives/"
 
   tasks:
-  - name: create archive of volttron home and root
+  - name: create archive of volttron home
     archive:
       path:
       - "{{ volttron_home }}"
-      - "{{ volttron_root }}"
       dest: "{{ output_archive_name }}"
       format: gz
   - name: retrieve archive

@@ -33,7 +33,6 @@
 
   - name: update agent
     volttron.deployment.volttron_agent:
-      volttron_root: "{{ volttron_root }}"
       volttron_home: "{{ volttron_home }}"
       volttron_venv: "{{ volttron_venv }}"
       agent_vip_id: "{{ agent_identity }}"
