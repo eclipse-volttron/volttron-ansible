@@ -5,7 +5,7 @@
   assert:
     that:
       - (ansible_distribution_major_version | int >= 18)
-      - (ansible_distribution_major_version | int <= 20)
+      - (ansible_distribution_major_version | int <= 22)
     fail_msg: "the system is identified as Ubuntu:{{ansible_distribution_major_version}}, which is not supported"
 - name: check debian version
   when: ansible_distribution == "Debian"
