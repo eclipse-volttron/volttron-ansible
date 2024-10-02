@@ -1,0 +1,14 @@
+ansible_test:
+  hosts:
+    collector1:
+      ansible_host: collector1 # may use IP or hostname. Use localhost for local installation
+      ansible_connection: ssh # If using local installation, use local
+      # Explicitly set the python interpreter. Unless specified, this will also be the interpreter
+      # used for the volttron virtual environment.
+      ansible_python_interpreter: "python3.10" 
+      http_proxy: "http://localhost:1234" # Set the http and https proxy environment variables if the host does not route to the internet
+      https_proxy: "http://localhost:1234"
+      volttron_home: "~/.volttron_test" # The location of the volttron home directory on the managed node
+      ## host_configs_dir is the location on the managed node where the platform's agent configuration files are placed by ansible
+      host_configs_dir: "~/.volttron_configs"
+      verbose_debug_tasks: true # Set to true to enable verbose debugging of ansible tasks
