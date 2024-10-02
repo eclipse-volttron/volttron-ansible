@@ -15,6 +15,31 @@ That would typically look like:
 ansible-galaxy collection install git+https://github.com/eclipse-volttron/volttron-ansible.git
 ```
 
+## Using
+
+The collection provides a number of playbooks and roles that can be used to install VOLTTRON, configure it, and manage its operation. The documentation provided below will go into more detail on the seteps of using these playbooks. The general process for using this collection is as follows:
+
+- Install the collection
+- Create an inventory file that describes the hosts you want to manage
+- Create the configuration structure for each host that describes the platform and agents to be installed, and contains the configuration for those agents.
+- Run the playbooks in order
+    - host_config
+    ```bash
+    ansible-playbook -i <inventory_file> -l <host> volttron.deployment.host_config
+    ```
+    - install_platform
+    ```bash
+    ansible-playbook -i <inventory_file> -l <host> volttron.deployment.install_platform
+    ```
+    - run_platforms
+    ```bash
+    ansible-playbook -i <inventory_file> -l <host> volttron.deployment.run_platforms
+    ```
+    - configure_agents
+    ```bash
+    ansible-playbook -i <inventory_file> -l <host> volttron.deployment.configure_agents
+    ```
+
 ## Documentation
 
 Documentation of the components here is rendered on [Read the Docs](https://volttron.readthedocs.io/projects/volttron-ansible/en/main/).

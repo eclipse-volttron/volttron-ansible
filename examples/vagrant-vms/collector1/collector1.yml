@@ -1,11 +1,11 @@
 ---
-config: {}
-  #message-bus: rmq
+config: 
+  message-bus: rmq
 
 agents:
   listener:
     agent_state: present
-    agent_source: '$VOLTTRON_ROOT/examples/ListenerAgent'
+    agent_pypi_package: 'volttron-listener'
     agent_running: True
     agent_enabled: True
     agent_tag: listen
@@ -20,8 +20,23 @@ agents:
     - path: top_store.json
       name: pnnl/richland/isb/magaix.json
 
+  platform.driver:
+      agent_state: present
+      agent_pypi_package: 'volttron-platform-driver'
+      agent_running: false
+      agent_enabled: false
+      agent_tag: drivers
+      agent_config_store:
+      - path: configuration_store/platform.driver
+        name: ""
+      agent_post_install_packages: # Install these packages after the agent is installed
+      - pip: volttron-lib-fake-driver # May use pip or poetry here
+
+      # There is a corresponding agent_pre_install_packages that will install these packages before
+      # the agent is installed.
+
   historian.sqlite:
-    agent_source: '$VOLTTRON_ROOT/services/core/SQLHistorian'
     agent_config: 'config.sqlite'
+    agent_pypi_package: 'volttron-sqlite-historian'
     agent_running: True
     agent_enabled: True
