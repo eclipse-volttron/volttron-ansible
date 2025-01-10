@@ -20,7 +20,8 @@ ansible-galaxy collection install git+https://github.com/eclipse-volttron/volttr
 The collection provides a number of playbooks and roles that can be used to install VOLTTRON, configure it, and manage its operation. The documentation provided below will go into more detail on the seteps of using these playbooks. The general process for using this collection is as follows:
 
 - Install the collection
-- Create an inventory file that describes the hosts you want to manage
+- Create an inventory file that describes the hosts you want to manage (examples in the
+  `examples/vagrant-vms` directory)
 - Create the configuration structure for each host that describes the platform and agents to be installed, and contains the configuration for those agents.
 - Run the playbooks in order
     - host_config
