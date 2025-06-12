@@ -38,6 +38,13 @@
     dest: "{{ volttron_venv }}/bin/start-volttron"
     mode: 0755
 
+- name: create volttron service file
+  template:
+    src: volttron-service.j2
+    dest: "/etc/systemd/system/volttron.service"
+    owner: root
+    group: root
+
 # configure the platform
 - name: ensure VOLTTRON_HOME exists
   file:

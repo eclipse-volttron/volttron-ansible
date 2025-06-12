@@ -1,0 +1,26 @@
+
+# VOLTTRON SystemD unit
+# Exec Start exectues the volttron platform script built by bootstrap
+# This does not have to activate the virtualenv as the script will do that
+[Unit]
+Description=VOLTTRON Platform Service
+After=network.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Restart=on-failure
+RestartSec=5s
+Type=simple
+User=volttron
+Group=volttron
+WorkingDirectory={{volttron_home}}
+StandardOutput=null
+StandardError=null
+#Uncomment and change this to specify a different VOLTTRON_HOME
+Environment="VOLTTRON_HOME={{volttron_home}}"
+ExecStart={{volttron_venv}}/bin/start-volttron
+ExecStop={{volttron_venv}}/bin/vctl shutdown --platform
+
+[Install]
+WantedBy=multi-user.target
