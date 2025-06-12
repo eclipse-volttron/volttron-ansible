@@ -44,6 +44,8 @@
     dest: "/etc/systemd/system/volttron.service"
     owner: root
     group: root
+  become: true
+  become_user: root
 
 # configure the platform
 - name: ensure VOLTTRON_HOME exists
