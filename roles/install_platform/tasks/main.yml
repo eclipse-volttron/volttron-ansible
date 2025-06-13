@@ -65,8 +65,8 @@
   ini_file:
     path: "{{ volttron_home }}/config"
     section: volttron
-    option: message-bus
-    value: "{{ message_bus }}"
+    option: messagebus
+    value: "{{ messagebus }}"
     mode: '0600'
     backup: yes
 - name: ensure platform configuration
@@ -81,7 +81,7 @@
 
 # For RMQ, do the extra config/bootstrapping/cert generation
 - name: rabbitmq configuration
-  when: message_bus == "rmq"
+  when: messagebus == "rmq"
   block:
   - name: create rabbitmq config
     template:

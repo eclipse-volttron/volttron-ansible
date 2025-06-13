@@ -119,7 +119,7 @@
     file: "{{ deployment_platform_config_file }}"
     name: host_configuration
 - set_fact:
-    message_bus: "{{ host_configuration['config']['message-bus'] | default('zmq') }}"
+    messagebus: "{{ host_configuration['config']['messagebus'] | default('zmq') }}"
     instance_name: "{{ host_configuration['config']['instance-name'] | default(inventory_hostname) }}"
 
 - name: print all default VOLTTRON recipe facts
