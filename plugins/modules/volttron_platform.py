@@ -179,14 +179,17 @@ def execute_task(module):
 
     available_scripts = {
         "running": [
-            '.',
-            "{volttron_venv}/bin/start-volttron".format(volttron_venv=params['volttron_venv'])],
+            "sudo",
+            "systemctl",
+            "start",
+            "volttron"
+        ],
         "stopped": [
-            f"{params['volttron_venv']}/bin/python",
-            "-m",
-            "volttron.client.commands.control",
-            "shutdown",
-            "--platform"],
+            "sudo",
+            "systemctl",
+            "stop",
+            "volttron"
+        ],
 
     }
 
