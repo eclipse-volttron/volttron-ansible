@@ -19,7 +19,7 @@ StandardOutput=null
 StandardError=null
 #Uncomment and change this to specify a different VOLTTRON_HOME
 Environment="VOLTTRON_HOME={{volttron_home}}"
-ExecStart={{volttron_venv}}/bin/start-volttron
+ExecStart={{volttron_venv}}/bin/volttron -vv -l {{volttron_home}}/volttron.log
 ExecStop={{volttron_venv}}/bin/vctl shutdown --platform
 
 [Install]
