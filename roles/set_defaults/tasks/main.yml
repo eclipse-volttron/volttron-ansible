@@ -142,6 +142,6 @@
     - "deployment_platform_config_dir {{ deployment_platform_config_dir }}"
     - "deployment_platform_config_file {{ deployment_platform_config_file }}"
     - "--- values determined from configuration files ---"
-    - "message_bus {{ message_bus }}"
+    - "messagebus {{ messagebus }}"
     - "instance_name {{ instance_name }}"
   when: verbose_debug_tasks | bool
