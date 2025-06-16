@@ -47,6 +47,17 @@
   become: true
   become_user: root
 
+# Daemon reload
+- name: force reload of services to pick up volttron service
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+# enable service
+- name: enable volttron service
+  ansible.builtin.systemd_service:
+    name: volttron
+    enabled: true
+
 # configure the platform
 - name: ensure VOLTTRON_HOME exists
   file:
