@@ -47,7 +47,7 @@
       name: extra_system_packages
 
   - name: install rabbitmq
-    when: message_bus == 'rmq'
+    when: messagebus == 'rmq'
     block:
     - name: Installing extra system level things for rabbit.
       apt:

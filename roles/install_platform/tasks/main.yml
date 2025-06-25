@@ -38,6 +38,28 @@
     dest: "{{ volttron_venv }}/bin/start-volttron"
     mode: 0755
 
+- name: create volttron service file
+  template:
+    src: volttron-service.j2
+    dest: "/etc/systemd/system/volttron.service"
+    owner: root
+    group: root
+  become: true
+  become_user: root
+
+# Daemon reload
+- name: force reload of services to pick up volttron service
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+    become: true
+
+# enable service
+- name: enable volttron service
+  ansible.builtin.systemd_service:
+    name: volttron
+    enabled: true
+    become: true
+
 # configure the platform
 - name: ensure VOLTTRON_HOME exists
   file:
@@ -56,8 +78,8 @@
   ini_file:
     path: "{{ volttron_home }}/config"
     section: volttron
-    option: message-bus
-    value: "{{ message_bus }}"
+    option: messagebus
+    value: "{{ messagebus }}"
     mode: '0600'
     backup: yes
 - name: ensure platform configuration
@@ -72,7 +94,7 @@
 
 # For RMQ, do the extra config/bootstrapping/cert generation
 - name: rabbitmq configuration
-  when: message_bus == "rmq"
+  when: messagebus == "rmq"
   block:
   - name: create rabbitmq config
     template:

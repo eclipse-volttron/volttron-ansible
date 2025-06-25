@@ -49,7 +49,7 @@
       name: extra_system_packages
 
   - name: install rabbitmq
-    when: message_bus == 'rmq'
+    when: messagebus == 'rmq'
     block:
     - name: Add yum repository for erlang
       yum_repository:
