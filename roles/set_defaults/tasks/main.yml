@@ -121,6 +121,10 @@
 - set_fact:
     messagebus: "{{ host_configuration['config']['messagebus'] | default('zmq') }}"
     instance_name: "{{ host_configuration['config']['instance-name'] | default(inventory_hostname) }}"
+    agent_isolation_mode: "{{host_configuration['config']['agent-isolation-mode'] | default('True') }}"
+    auth_enabled: "{{host_configuration['config']['auth-enabled'] | default('False') }}"
+    enable_federation: "{{host_configuration['config']['enable-federation'] | default('False') }}"
+    federation_url: "{{host_configuration['config']['federation-url'] | default(omit) }}"
 
 - name: print all default VOLTTRON recipe facts
   debug:
