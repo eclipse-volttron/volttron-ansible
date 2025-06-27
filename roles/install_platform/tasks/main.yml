@@ -51,14 +51,14 @@
 - name: force reload of services to pick up volttron service
   ansible.builtin.systemd_service:
     daemon_reload: true
-    become: true
+  become: true
 
 # enable service
 - name: enable volttron service
   ansible.builtin.systemd_service:
     name: volttron
     enabled: true
-    become: true
+  become: true
 
 # configure the platform
 - name: ensure VOLTTRON_HOME exists
