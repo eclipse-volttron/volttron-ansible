@@ -63,6 +63,11 @@ description:
     - Note that there is no 'restart' state (that would not be idempotent), you can use two tasks to set "stopped" immediately followed by "running"
 
 options:
+    instance_name:
+        description:
+            - The name of the VOLTTRON instance to manage. This is used to construct the service name for systemd.
+        required: true
+        type: string
     volttron_venv:
         description:
             - path to the VOLTTRON venv directory where the python environment is installed
@@ -182,13 +187,13 @@ def execute_task(module):
             "sudo",
             "systemctl",
             "start",
-            "volttron"
+            f"volttron-{params['instance_name']}"
         ],
         "stopped": [
             "sudo",
             "systemctl",
             "stop",
-            "volttron"
+            f"volttron-{params['instance_name']}"
         ],
 
     }
@@ -262,6 +267,12 @@ def run_module():
     # define available arguments/parameters a user can pass to the module
     # these should match the DOCUMENTATION above
     module_args = {
+        "instance_name": {
+            "type": "str",
+            "required": True,
+            "default": None,
+            "description": "The name of the VOLTTRON instance to manage. This is used to construct the service name for systemd."
+        },
         "volttron_venv": {
             "type": "str",
             "default": None,

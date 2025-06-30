@@ -10,6 +10,7 @@
 
     - name: "start or stop the platform (set to {{ platform_state }})"
       volttron.deployment.volttron_platform:
+        instance_name: "{{instance_name}}"
         volttron_venv: "{{volttron_venv}}"
         volttron_home: "{{volttron_home}}"
         volttron_log_file: "{{volttron_log_file}}"
