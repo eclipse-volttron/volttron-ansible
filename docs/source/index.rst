@@ -1,4 +1,4 @@
-.. VOLTTRON-ANSIBLE documentation master file
+.. _VOLTTRON-ANSIBLE:
 
 VOLTTRON Deployment Recipes
 ===========================
