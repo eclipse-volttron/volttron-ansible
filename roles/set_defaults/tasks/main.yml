@@ -8,6 +8,7 @@
     ## some standard ansible vars where we want to ensure assignment and defaults
     ansible_user: "{{ ansible_user | default(ansible_user_id) }}"
     ansible_python_interpreter: "{{ ansible_python_interpreter | default('{{discovered_interpreter_python}}') }}"
+    instance_name: "{{ host_configuration['config']['instance-name'] | default(inventory_hostname) }}"
 
     ### Variable to allow for different python interpreters between ansible and the volttron platform env.
     python_interpreter: "{{ python_interpreter | default('{{ansible_python_interpreter}}') }}"
@@ -121,6 +122,10 @@
 - set_fact:
     messagebus: "{{ host_configuration['config']['messagebus'] | default('zmq') }}"
     instance_name: "{{ host_configuration['config']['instance-name'] | default(inventory_hostname) }}"
+    agent_isolation_mode: "{{host_configuration['config']['agent-isolation-mode'] | default('True') }}"
+    auth_enabled: "{{host_configuration['config']['auth-enabled'] | default('False') }}"
+    enable_federation: "{{host_configuration['config']['enable-federation'] | default('False') }}"
+    federation_url: "{{host_configuration['config']['federation-url'] | default(omit) }}"
 
 - name: print all default VOLTTRON recipe facts
   debug:
