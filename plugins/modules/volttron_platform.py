@@ -184,14 +184,12 @@ def execute_task(module):
 
     available_scripts = {
         "running": [
-            "sudo",
-            "systemctl",
+            "/usr/bin/systemctl",
             "start",
             f"volttron-{params['instance_name']}"
         ],
         "stopped": [
-            "sudo",
-            "systemctl",
+            "/usr/bin/systemctl",
             "stop",
             f"volttron-{params['instance_name']}"
         ],

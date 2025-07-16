@@ -7,6 +7,7 @@
     volttron_log_file: "{{volttron_log_file}}"
     state: "{{ platform_state }}"
   register: v_p_result
+  become: true
 - debug:
     msg: "{{ v_p_result }}"
   when: verbose_debug_tasks | bool
