@@ -42,7 +42,6 @@
 # docs here: https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_documenting.html
 
 import os
-import psutil
 import subprocess
 import time
 
@@ -158,8 +157,11 @@ def check_pid(pid_file):
     is_running = False
     if os.path.exists(pid_file):
         pid = int(open(pid_file, 'r').read())
-        if psutil.pid_exists(pid):
+        try:
+            os.kill(pid, 0)
             is_running = True
+        except OSError:
+            is_running = False
     return is_running
 
 def execute_task(module):

@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "../../../../volttron-installer"
+		},
+		{
+			"path": "../../.."
+		}
+	],
+	"settings": {}
+}

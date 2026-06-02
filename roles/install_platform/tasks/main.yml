@@ -29,6 +29,16 @@
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ http_proxy }}"
 
+- name: install VOLTTRON web packages
+  pip:
+    virtualenv: "{{ volttron_venv }}"
+    virtualenv_command: "{{ python_interpreter }} -m venv"
+    name: "{{ web_packages }}"
+  environment:
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ http_proxy }}"
+  when: web_enabled | bool
+
 - name: create environment activation script
   template:
     src: activate-instance-env.j2
@@ -85,7 +95,7 @@
     mode: '0600'
     backup: yes
 - name: ensure platform configuration
-  loop: "{{ host_configuration.config | dict2items }}"
+  loop: "{{ host_configuration.config | dict2items | rejectattr('key', 'in', web_config_keys) | list }}"
   ini_file:
     path: "{{ volttron_home }}/config"
     section: volttron
@@ -93,6 +103,79 @@
     value: "{{ item.value }}"
     mode: '0600'
     backup: yes
+
+- name: read existing web secret key
+  command: >-
+    {{ volttron_venv }}/bin/python -c
+    "from configparser import ConfigParser; from pathlib import Path; c=ConfigParser(); c.read(Path('{{ volttron_home }}') / 'config'); print(c.get('web', 'web-secret-key', fallback=''))"
+  register: existing_web_secret_key
+  changed_when: false
+  failed_when: false
+  when: web_enabled | bool
+  no_log: true
+
+- name: choose web secret key
+  set_fact:
+    effective_web_secret_key: "{{ web_secret_key if (web_secret_key | length > 0) else ((existing_web_secret_key.stdout | default('')) if (existing_web_secret_key.stdout | default('') | length > 0) else lookup('password', '/dev/null length=43 chars=ascii_letters,digits')) }}"
+  when: web_enabled | bool
+  no_log: true
+
+- name: configure web bind address
+  ini_file:
+    path: "{{ volttron_home }}/config"
+    section: web
+    option: bind-web-address
+    value: "{{ web_bind_address }}"
+    mode: '0600'
+    backup: yes
+  when: web_enabled | bool
+
+- name: configure web secret key
+  ini_file:
+    path: "{{ volttron_home }}/config"
+    section: web
+    option: web-secret-key
+    value: "{{ effective_web_secret_key }}"
+    mode: '0600'
+    backup: yes
+  when: web_enabled | bool
+  no_log: true
+
+- name: copy web user setup script
+  template:
+    src: setup-web-user.py.j2
+    dest: "{{ volttron_home }}/setup-web-user.py"
+    mode: '0600'
+  changed_when: false
+  when:
+  - web_enabled | bool
+  - web_admin_user | length > 0
+  - web_admin_password | length > 0
+
+- name: create web admin user
+  command: "{{ volttron_venv }}/bin/python {{ volttron_home }}/setup-web-user.py"
+  environment:
+    VOLTTRON_HOME: "{{ volttron_home }}"
+    VOLTTRON_WEB_ADMIN_USER: "{{ web_admin_user }}"
+    VOLTTRON_WEB_ADMIN_PASSWORD: "{{ web_admin_password }}"
+    VOLTTRON_WEB_ADMIN_GROUPS: "{{ web_admin_groups | to_json }}"
+  register: web_admin_user_result
+  changed_when: "web_admin_user_result.stdout | trim == 'CHANGED'"
+  when:
+  - web_enabled | bool
+  - web_admin_user | length > 0
+  - web_admin_password | length > 0
+  no_log: true
+
+- name: remove web user setup script
+  file:
+    path: "{{ volttron_home }}/setup-web-user.py"
+    state: absent
+  changed_when: false
+  when:
+  - web_enabled | bool
+  - web_admin_user | length > 0
+  - web_admin_password | length > 0
 
 # For RMQ, do the extra config/bootstrapping/cert generation
 - name: rabbitmq configuration
@@ -122,4 +205,3 @@
     debug:
       msg: "{{ vcfg_result }}"
     failed_when: vcfg_result.failed
-

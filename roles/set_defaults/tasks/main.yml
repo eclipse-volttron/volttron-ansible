@@ -126,6 +126,21 @@
     auth_enabled: "{{host_configuration['config']['auth-enabled'] | default('False') }}"
     enable_federation: "{{host_configuration['config']['enable-federation'] | default('False') }}"
     federation_url: "{{host_configuration['config']['federation-url'] | default(omit) }}"
+    web_enabled: "{{ host_configuration['config']['web-enabled'] | default(True) }}"
+    web_bind_address: "{{ host_configuration['config']['bind-web-address'] | default('http://127.0.0.1:8443') }}"
+    web_secret_key: "{{ host_configuration['config']['web-secret-key'] | default('') }}"
+    web_admin_user: "{{ host_configuration['config']['web-admin-user'] | default('') }}"
+    web_admin_password: "{{ host_configuration['config']['web-admin-password'] | default('') }}"
+    web_admin_groups: "{{ host_configuration['config']['web-admin-groups'] | default(['admin', 'vui']) }}"
+    web_packages: "{{ host_configuration['config']['web-packages'] | default(['volttron-lib-tree', 'volttron-lib-web']) }}"
+    web_config_keys:
+    - web-enabled
+    - bind-web-address
+    - web-secret-key
+    - web-admin-user
+    - web-admin-password
+    - web-admin-groups
+    - web-packages
 
 - name: print all default VOLTTRON recipe facts
   debug:
@@ -149,4 +164,7 @@
     - "--- values determined from configuration files ---"
     - "messagebus {{ messagebus }}"
     - "instance_name {{ instance_name }}"
+    - "web_enabled {{ web_enabled }}"
+    - "web_bind_address {{ web_bind_address }}"
+    - "web_admin_user {{ web_admin_user }}"
   when: verbose_debug_tasks | bool
