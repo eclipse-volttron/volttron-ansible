@@ -141,6 +141,26 @@
   when: web_enabled | bool
   no_log: true
 
+- name: configure web ssl certificate
+  ini_file:
+    path: "{{ volttron_home }}/config"
+    section: web
+    option: web-ssl-cert
+    value: "{{ web_ssl_cert }}"
+    mode: '0600'
+    backup: yes
+  when: web_enabled | bool and web_ssl_cert | length > 0
+
+- name: configure web ssl key
+  ini_file:
+    path: "{{ volttron_home }}/config"
+    section: web
+    option: web-ssl-key
+    value: "{{ web_ssl_key }}"
+    mode: '0600'
+    backup: yes
+  when: web_enabled | bool and web_ssl_key | length > 0
+
 - name: copy web user setup script
   template:
     src: setup-web-user.py.j2

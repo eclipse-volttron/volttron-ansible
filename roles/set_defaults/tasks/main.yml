@@ -133,6 +133,8 @@
     web_admin_password: "{{ host_configuration['config']['web-admin-password'] | default('') }}"
     web_admin_groups: "{{ host_configuration['config']['web-admin-groups'] | default(['admin', 'vui']) }}"
     web_packages: "{{ host_configuration['config']['web-packages'] | default(['volttron-lib-tree', 'volttron-lib-web']) }}"
+    web_ssl_cert: "{{ host_configuration['config']['web-ssl-cert'] | default('') }}"
+    web_ssl_key: "{{ host_configuration['config']['web-ssl-key'] | default('') }}"
     web_config_keys:
     - web-enabled
     - bind-web-address
@@ -141,6 +143,8 @@
     - web-admin-password
     - web-admin-groups
     - web-packages
+    - web-ssl-cert
+    - web-ssl-key
 
 - name: print all default VOLTTRON recipe facts
   debug:
