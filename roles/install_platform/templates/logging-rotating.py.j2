@@ -1,0 +1,25 @@
+{
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'agent': {
+            '()': 'volttron.client.logs.AgentFormatter',
+            'format': '%(asctime)s %(composite_name)s(%(lineno)d) %(levelname)s: %(message)s',
+        },
+    },
+    'handlers': {
+        'rotating': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'DEBUG',
+            'formatter': 'agent',
+            'filename': {{ (volttron_log_file | regex_replace('^~', ansible_env.HOME)) | to_json }},
+            'maxBytes': {{ volttron_log_max_bytes }},
+            'backupCount': {{ volttron_log_backup_count }},
+            'encoding': 'utf-8',
+        },
+    },
+    'root': {
+        'handlers': ['rotating'],
+        'level': 'DEBUG',
+    },
+}

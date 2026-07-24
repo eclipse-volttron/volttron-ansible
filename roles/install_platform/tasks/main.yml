@@ -39,6 +39,18 @@
     https_proxy: "{{ http_proxy }}"
   when: web_enabled | bool
 
+- name: ensure VOLTTRON_HOME exists
+  file:
+    path: "{{ volttron_home }}"
+    state: directory
+    mode: 0755
+
+- name: create VOLTTRON logging configuration
+  template:
+    src: logging-rotating.py.j2
+    dest: "{{ volttron_log_config }}"
+    mode: '0600'
+
 - name: create environment activation script
   template:
     src: activate-instance-env.j2
@@ -73,11 +85,6 @@
   become: true
 
 # configure the platform
-- name: ensure VOLTTRON_HOME exists
-  file:
-    path: "{{ volttron_home }}"
-    state: directory
-    mode: 0755
 - name: set instance name
   ini_file:
     path: "{{ volttron_home }}/config"

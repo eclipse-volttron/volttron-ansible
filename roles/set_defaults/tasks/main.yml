@@ -60,6 +60,15 @@
     #  [string - path] default: ``$HOME/.volttron/volttron.log``
     #    Path to the volttron log file.
     volttron_log_file: "{{ volttron_log_file | default('{{volttron_home}}/volttron.log') }}"
+    #  [string - path] default: ``$HOME/.volttron/logging-rotating.py``
+    #    Python logging configuration passed to VOLTTRON with --log-config.
+    volttron_log_config: "{{ volttron_log_config | default('{{volttron_home}}/logging-rotating.py') }}"
+    #  [integer] default: ``10485760``
+    #    Maximum size of the active VOLTTRON log file before rotation.
+    volttron_log_max_bytes: "{{ volttron_log_max_bytes | default(10485760) }}"
+    #  [integer] default: ``5``
+    #    Number of rotated VOLTTRON log files to retain.
+    volttron_log_backup_count: "{{ volttron_log_backup_count | default(5) }}"
     ###
     #  [string - path] default: ``$HOME/volttron.venv``
     #    path to the python virtual environment into which the VOLTTRON package will be installed
