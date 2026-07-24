@@ -5,6 +5,6 @@ SCRIPT_DIR="$( cd "$( echo "${BASH_SOURCE[0]%/*}" )" && pwd )"
 # Activate environment
 source "$SCRIPT_DIR/activate"
 
-echo "Starting VOLTTRON verbosely in the background"
-exec volttron -vv -l $VOLTTRON_HOME/volttron.log > /dev/null 2>&1 &
+echo "Starting VOLTTRON with rotating file logging in the background"
+exec volttron --log-config "{{ volttron_log_config }}" > /dev/null 2>&1 &
 disown

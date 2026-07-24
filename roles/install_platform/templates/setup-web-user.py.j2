@@ -1,0 +1,72 @@
+import json
+import os
+from pathlib import Path
+
+from passlib.hash import argon2
+import zmq
+
+volttron_home = Path(os.environ["VOLTTRON_HOME"]).expanduser()
+volttron_home.mkdir(parents=True, exist_ok=True)
+username = os.environ["VOLTTRON_WEB_ADMIN_USER"]
+password = os.environ["VOLTTRON_WEB_ADMIN_PASSWORD"]
+groups = json.loads(os.environ.get("VOLTTRON_WEB_ADMIN_GROUPS", "[]"))
+
+users_file = volttron_home / "web-users.json"
+users = json.loads(users_file.read_text()) if users_file.exists() else {}
+existing_user = users.get(username, {})
+existing_hash = existing_user.get("hashed_password")
+changed = (
+    not existing_hash
+    or not argon2.verify(password, existing_hash)
+    or existing_user.get("groups", []) != groups
+)
+if changed:
+    users[username] = {
+        "hashed_password": argon2.hash(password),
+        "groups": groups,
+    }
+    users_file.write_text(json.dumps(users, indent=2))
+    users_file.chmod(0o600)
+
+creds_dir = volttron_home / "credentials_store"
+creds_dir.mkdir(exist_ok=True)
+creds_file = creds_dir / "platform.web.json"
+if not creds_file.exists():
+    publickey, secretkey = [key.decode("ascii") for key in zmq.curve_keypair()]
+    creds_file.write_text(json.dumps({
+        "identity": "platform.web",
+        "publickey": publickey,
+        "secretkey": secretkey,
+        "domain": "",
+        "address": "",
+    }, indent=2))
+    creds_file.chmod(0o600)
+    changed = True
+
+authz_file = volttron_home / "authz.json"
+authz_data = json.loads(authz_file.read_text()) if authz_file.exists() else {
+    "roles": {},
+    "agents": {},
+    "agent_groups": {},
+}
+authz_data.setdefault("roles", {})
+authz_data.setdefault("agents", {})
+authz_data.setdefault("agent_groups", {})
+authz_data["agents"].setdefault("platform.web", {
+    "comments": "Automatically added by volttron-ansible for the web service"
+})
+
+admin_users = authz_data["agent_groups"].setdefault("admin_users", {})
+identities = set(admin_users.get("identities", []))
+identities.add("platform.web")
+admin_users["identities"] = sorted(identities)
+roles = set(admin_users.get("agent_roles", []))
+roles.add("admin")
+admin_users["agent_roles"] = sorted(roles)
+authz_before = authz_file.read_text() if authz_file.exists() else ""
+authz_after = json.dumps(authz_data, indent=2)
+if authz_before != authz_after:
+    authz_file.write_text(authz_after)
+    authz_file.chmod(0o600)
+    changed = True
+print("CHANGED" if changed else "UNCHANGED")

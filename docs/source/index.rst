@@ -457,6 +457,38 @@ that are required, and the agent's configuration file and configuration store en
 that set is setting the initial running state of the agent, and whether or not it is enabled to
 autostart on platform start.
 
+Web configuration
+~~~~~~~~~~~~~~~~~
+
+The install platform recipe can install and configure the VOLTTRON web service. Web support is
+enabled by default and can be disabled in the platform configuration file::
+
+  config:
+    web-enabled: false
+
+When enabled, the role installs ``volttron-lib-tree`` and ``volttron-lib-web`` by default and writes
+the ``[web]`` section in ``$VOLTTRON_HOME/config``. The bind address defaults to localhost and can be
+overridden with ``bind-web-address``::
+
+  config:
+    web-enabled: true
+    bind-web-address: http://0.0.0.0:8443
+
+To create a web user for the admin UI or VUI REST API, provide both ``web-admin-user`` and
+``web-admin-password``. User creation is skipped when either value is omitted.
+
+.. code-block:: yaml
+
+  config:
+    web-enabled: true
+    bind-web-address: http://0.0.0.0:8443
+    web-admin-user: volttron-admin
+    web-admin-password: change-me
+
+The default web user groups are ``admin`` and ``vui``. Override them with ``web-admin-groups`` when
+needed. The generated web secret key is preserved across subsequent runs unless
+``web-secret-key`` is explicitly set.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

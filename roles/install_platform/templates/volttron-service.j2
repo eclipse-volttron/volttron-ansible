@@ -19,7 +19,7 @@ StandardOutput=null
 StandardError=null
 #Uncomment and change this to specify a different VOLTTRON_HOME
 Environment="VOLTTRON_HOME={{volttron_home}}" "PATH={{volttron_venv}}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" "VIRTUAL_ENV={{volttron_venv}}"
-ExecStart={{volttron_venv}}/bin/python {{volttron_venv}}/bin/volttron -vv -l {{volttron_home}}/volttron.log
+ExecStart={{volttron_venv}}/bin/python {{volttron_venv}}/bin/volttron --log-config {{volttron_log_config}}
 ExecStop={{volttron_venv}}/bin/vctl shutdown --platform
 
 [Install]

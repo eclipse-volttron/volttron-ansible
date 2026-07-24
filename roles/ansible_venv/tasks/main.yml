@@ -25,7 +25,6 @@
     virtualenv_command: "{{ ansible_python_interpreter }} -m venv"
     name:
     - pexpect
-    - psutil #required for volttron_platform module
   environment:
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ https_proxy }}"
